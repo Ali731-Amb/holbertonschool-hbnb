@@ -1,0 +1,18 @@
+sequenceDiagram
+participant User
+participant API
+participant BusinessLogic
+participant Database
+
+User->>API: API Call (Create Place)
+API-->>User: Format invalide
+API->>BusinessLogic: Validate and Process Request
+BusinessLogic-->>API :unauthenticated user
+API-->>User: Return Faillure
+BusinessLogic->>Database: Save Data
+Database-->>BusinessLogic: Data access error
+BusinessLogic-->>API: Return Response
+API-->>User: Return Faillure
+Database-->>BusinessLogic: Confirm Save
+BusinessLogic-->>API: Return Response
+API-->>User: Return Success
