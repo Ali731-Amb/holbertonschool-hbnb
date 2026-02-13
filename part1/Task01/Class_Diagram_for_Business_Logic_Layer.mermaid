@@ -1,0 +1,66 @@
+classDiagram
+direction TB
+    class BaseModel {
+	    -UUID id
+	    -datetime created_at
+	    -datetime updated_at
+    }
+
+    class Place {
+	    -string title
+	    -string description
+	    -float price
+	    -float latitude
+	    -float longitude
+        -int max_guests
+	    -int number_rooms
+        -int number_bed
+	    -int number_bathrooms
+        +create() place
+        +delete() void
+        +update() void
+        +read() place
+    }
+
+    class Review {
+	    -string text
+	    -int rating
+        +create_review () review
+        +update() review
+        +read () review
+        +delete() void
+    }
+
+    class Amenity {
+	    -string name
+	    -string description
+        +create () amenity
+        +update () amenity
+        +read () amenity
+        +delete () void
+    }
+
+    class User {
+	    -string email
+	    -string password
+	    -string first_name
+	    -string last_name
+	    -bool is_admin
+        -bool is_host
+        -bool Dog
+        -string job
+        +create() user
+        +update_user() user
+        +read_user() void
+        +delete_user() void
+        +string icon_url
+    }
+
+    BaseModel <|-- User
+    BaseModel <|-- Place
+    BaseModel <|-- Review
+    BaseModel <|-- Amenity
+    User "1" -- "0..*" Place : owns
+    User "1" -- "0..*" Review : writes
+    Place "1" -- "0..*" Review : has
+    Place "0..*" -- "0..*" Amenity : contains
