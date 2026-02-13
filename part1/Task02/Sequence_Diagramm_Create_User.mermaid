@@ -1,0 +1,18 @@
+sequenceDiagram
+participant User
+participant API
+participant BusinessLogic
+participant Database
+
+User->>API: API Call (Register User)
+API-->>User: Format invalide
+API->>BusinessLogic: Validate and Process Request
+BusinessLogic-->>API :invalid email address
+API-->>User: Return Faillure
+BusinessLogic->>Database: Save Data
+Database-->>BusinessLogic: Mail already use
+BusinessLogic-->>API: Return Response
+API-->>User: Return Faillure
+Database-->>BusinessLogic: Confirm Save
+BusinessLogic-->>API: Return Response
+API-->>User: Return Success
