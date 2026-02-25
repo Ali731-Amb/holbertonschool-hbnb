@@ -85,7 +85,7 @@ class UserResource(Resource):
             'last_name': updated_user.last_name, 
             'email': updated_user.email,
             'pets': updated_user.pets.name if updated_user.pets else None
-                } , 200
+                } , 200 
 
     @api.response(200, 'User successfully deleted')
     @api.response(400, 'Invalid input data')
