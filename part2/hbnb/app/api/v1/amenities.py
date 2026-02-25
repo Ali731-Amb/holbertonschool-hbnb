@@ -51,4 +51,3 @@ class AmenityResource(Resource):
         if updated_amenity is None:
             return {'error' : 'Amenity not found'}, 404
         return updated_amenity
-        
