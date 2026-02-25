@@ -1,15 +1,22 @@
 from .base_model import BaseModel
 from werkzeug.security import generate_password_hash
+from enum import Enum
+
+class PetType(Enum):
+		CHIEN = 1
+		CHAT = 2 
+		OTHERS = 3
+
 
 class User(BaseModel):
-	def __init__(self, first_name, last_name, email, password = None, is_admin = False,):
+	def __init__(self, first_name, last_name, email, password = None, is_admin = False, pets = None):
 		super().__init__()
 		self.first_name = first_name
 		self.last_name = last_name
 		self.email = email
 		self.is_admin = is_admin
-		if password:
-			self.password = password
+		self.password = password if password else "Default123"
+		self.pets = pets
 
 #----------------First name ----------------
 	@property
@@ -90,3 +97,14 @@ class User(BaseModel):
 		if not isinstance(value, bool):
 			raise ValueError("is_admin must be a boolean")
 		self._is_admin = value
+
+#-----------------Pets-------------------------
+	@property
+	def pets(self):
+		return self._pets
+	
+	@pets.setter
+	def pets(self, value):
+		if value is not None and not isinstance(value, PetType):
+			raise ValueError("Pets is invalide")
+		self._pets = value
