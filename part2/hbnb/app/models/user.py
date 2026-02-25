@@ -37,7 +37,7 @@ class User(BaseModel):
 	@last_name.setter
 	def last_name(self, value):
 		if len(value) > 50:
-			raise ValueError("First name must be under 50 characters")
+			raise ValueError("Last name must be under 50 characters")
 		self._last_name = value 
 
 #--------------------- Email -----------------
@@ -105,6 +105,14 @@ class User(BaseModel):
 	
 	@pets.setter
 	def pets(self, value):
-		if value is not None and not isinstance(value, PetType):
-			raise ValueError("Pets is invalide")
-		self._pets = value
+		if value is None:
+			self._pets = None
+		elif isinstance(value, PetType):
+			self._pets = value
+		elif isinstance(value, str):
+			try:
+				self._pets = PetType[value.upper()] 
+			except KeyError:
+				raise ValueError(f"'{value}' is not valid animal.")
+		else:
+			raise ValueError("Format animal invalide.")
