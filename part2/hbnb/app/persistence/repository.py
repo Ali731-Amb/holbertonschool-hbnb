@@ -25,6 +25,10 @@ class Repository(ABC):
     def get_by_attribute(self, attr_name, attr_value):
         pass
 
+    @abstractmethod
+    def get_all_by_attribute(self, attr_name, attr_value):
+        pass
+
 
 class InMemoryRepository(Repository):
     def __init__(self):
@@ -50,3 +54,6 @@ class InMemoryRepository(Repository):
 
     def get_by_attribute(self, attr_name, attr_value):
         return next((obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value), None)
+    
+    def get_all_by_attribute(self, attr_name, attr_value):
+        return [obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value]
