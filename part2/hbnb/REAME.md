@@ -1,5 +1,9 @@
 # HBnB Evolution: The Definitive AirBnB Clone API
 
+
+<img width="934" height="734" alt="Gemini_Generated_Image_d7yr4ad7yr4ad7yr" src="https://github.com/user-attachments/assets/9b0dd68a-2019-46a7-9310-4be3be6dec0c" />
+
+
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-2.x-lightgrey.svg)
 ![Flask-RESTX](https://img.shields.io/badge/Flask--RESTX-1.x-orange.svg)
@@ -219,3 +223,4 @@ with interactive Swagger documentation.
 Developed by **[AMBLARD Alison]** – 
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
