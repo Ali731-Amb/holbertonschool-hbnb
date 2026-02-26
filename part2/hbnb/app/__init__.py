@@ -8,4 +8,10 @@ def create_app():
 
     # Register the users namespace
     api.add_namespace(users_ns, path='/api/v1/users')
+    # Register the amenities namespace
+    api.add_namespace('amenities', description='Amenity operations')
+    # Register the place namespace
+    api.add_namespace('places', description='Place operations')
+    # Register the review namespace
+    api.add_namespace('reviews', description='Review operations')
     return app
