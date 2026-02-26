@@ -2,6 +2,7 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.review import Review
+from app.models.place import Place
 
 class HBnBFacade:
     def __init__(self):
@@ -41,19 +42,61 @@ class HBnBFacade:
 
     def create_place(self, place_data):
     # Placeholder for logic to create a place, including validation for price, latitude, and longitude
-        pass
+        owner_id = place_data.get('owner_id')
+        owner = self.user_repo.get(owner_id)
+        if not owner:
+            raise ValueError(f"Owner with ID {owner_id} not found")
+        amenities = []
+        for aid in place_data.get('amenities', []):
+            amenity = self.amenity_repo.get(aid)
+            if not amenity:
+                raise ValueError(f"Amenity {aid} not found")
+            amenities.append(amenity)
+        try:
+            new_place = Place(
+            title=place_data.get('title'),
+            price=place_data.get('price'),
+            latitude=place_data.get('latitude'),
+            longitude=place_data.get('longitude'),
+            owner=owner,
+            description=place_data.get('description'),
+                            )
+            for amenity in amenities:
+                new_place.add_amenity(amenity)
+            self.place_repo.add(new_place)
+            return new_place
+        except(ValueError, TypeError) as e: 
+            raise ValueError(f"Invalid place data : {e}")
+
 
     def get_place(self, place_id):
         # Placeholder for logic to retrieve a place by ID, including associated owner and amenities
-        pass
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError(f"Place with ID {place_id} not found")
+        return place
 
     def get_all_places(self):
         # Placeholder for logic to retrieve all places
-        pass
+        return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
         # Placeholder for logic to update a place
-        pass
+        place = self.get_place(place_id)
+        fields_to_update = ['title', 'description', 'price', 'latitude', 'longitude']
+        for key in fields_to_update:
+            if key in place_data:
+                setattr(place, key, place_data[key])
+        if 'amenities' in place_data:
+            place.amenities = []
+            for aid in place_data['amenities']:
+                amenity =self.amenity_repo.get(aid)
+                if not amenity:
+                    raise ValueError(f"Amenity {aid} not found")
+                place.add_amenity(amenity)
+        self.place_repo.update(place)
+        return place
+
 
 #---------------------Amenity-------------------------
 def create_amenity(self, amenity_data):
