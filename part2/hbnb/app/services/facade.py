@@ -19,15 +19,21 @@ class HBnBFacade:
         return user
     
     def update_user(self, user_id, user_data):
-        user = self.user_repo.get(user_id)
-        if user_id is None:
-            return None
+        user = self.get_user(user_id)
         for key, value in user_data.items():
-            setattr(user, key, value)
+            if hasattr(user, key):
+                if key == 'password':
+                    setattr(user, key, value)
+                elif getattr(user, key) != value:
+                    setattr(user, key, value)
+        self.user_repo.update(user)
         return user
 
     def get_user(self, user_id):
-        return self.user_repo.get(user_id)
+        user = self.user_repo.get(user_id)
+        if not user:
+            raise ValueError (f"User with ID {user_id} not found")
+        return user
 
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
@@ -99,46 +105,55 @@ class HBnBFacade:
 
 
 #---------------------Amenity-------------------------
-def create_amenity(self, amenity_data):
-    amenity = Amenity(**amenity_data)
-    self.amenity_repo.add(amenity)
-    return amenity
+    def create_amenity(self, amenity_data):
+        amenity = Amenity(**amenity_data)
+        self.amenity_repo.add(amenity)
+        return amenity
 
-def get_amenity(self, amenity_id):
-    return self.amenity_repo.get(amenity_id)
+    def get_amenity(self, amenity_id):
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            raise ValueError(f"Amenity with ID {amenity_id} not found")
+        return amenity
 
-def get_all_amenities(self):
-    return self.amenity_repo.get_all()
+    def get_all_amenities(self):
+        return self.amenity_repo.get_all()
 
-def update_amenity(self, amenity_id, amenity_data):
-    amenity = self.amenity_repo.get(amenity_id)
-    if amenity:
+    def update_amenity(self, amenity_id, amenity_data):
+        amenity = self.get_amenity(amenity_id)
         for key, value in amenity_data.items():
-            setattr(amenity, key, value)
-    return amenity
+            if hasattr(amenity, key):
+                setattr(amenity, key, value)
+        self.amenity_repo.update(amenity)
+        return amenity
 
 #------------------Reviews--------------------
-def create_review(self, review_data):
-    review = Review(**review_data)
-    self.review_repo.add(review)
-    return review
+    def create_review(self, review_data):
+        review = Review(**review_data)
+        self.review_repo.add(review)
+        return review
 
-def get_review(self, review_id):
-    return self.review_repo.get(review_id)
+    def get_review(self, review_id):
+        review = self.review_repo.get(review_id)
+        if not review:
+            raise ValueError(f"Review with ID {review_id} not found")
+        return review
 
-def get_all_reviews(self):
-    return self.review_repo.get_all()
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
 
-def get_reviews_by_place(self, place_id):
-    all_reviews = self.review_repo.get_all()
-    return [r for r in all_reviews if r.place_id == place_id]
+    def get_reviews_by_place(self, place):
+        self.get_place(place)
+        all_reviews = self.review_repo.get_all()
+        return [r for r in all_reviews if r.place == place]
 
-def update_review(self, review_id, review_data):
-    review = self.review_repo.get(review_id)
-    if review:
+    def update_review(self, review_id, review_data):
+        review = self.get_review(review_id)
         for key, value in review_data.items():
             setattr(review, key, value)
-    return review
+        self.review_repo.update(review)
+        return review
 
-def delete_review(self, review_id):
-    return self.review_repo.delete(review_id)
+    def delete_review(self, review_id):
+        self.get_review(review_id)
+        return self.review_repo.delete(review_id)
