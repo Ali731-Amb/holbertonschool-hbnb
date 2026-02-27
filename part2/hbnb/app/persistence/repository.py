@@ -14,7 +14,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def update(self, obj_id, data):
+    def update(self, obj):
         pass
 
     @abstractmethod
@@ -43,10 +43,9 @@ class InMemoryRepository(Repository):
     def get_all(self):
         return list(self._storage.values())
 
-    def update(self, obj_id, data):
-        obj = self.get(obj_id)
-        if obj:
-            obj.update(data)
+    def update(self, obj):
+        if obj.id in self._storage:
+            self._storage[obj.id] = obj
 
     def delete(self, obj_id):
         if obj_id in self._storage:
