@@ -13,7 +13,7 @@ user_model = api.model('User', {
     })
 
 @api.route('/')
-class UserList(Resource):
+class UserList(Resource): 
     @api.response(200, 'Success')
     def get(self):
         """List all users"""

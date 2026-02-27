@@ -34,8 +34,8 @@ class PlaceList(Resource):
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
-        # Placeholder for the logic to register a new place
-        pass
+        place_data = api.payload
+        exiting_place = facade.get.user
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
