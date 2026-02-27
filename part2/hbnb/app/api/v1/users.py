@@ -9,7 +9,7 @@ user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
     'email': fields.String(required=True, description='Email of the user'),
-    'pets': fields.String(description='Pet of the user', enum=['CHIEN', 'CHAT', 'OTHERS'])
+    'pets': fields.String(description='Pet of the user', enum=['DOG', 'CAT', 'OTHERS'])
     })
 
 @api.route('/')
