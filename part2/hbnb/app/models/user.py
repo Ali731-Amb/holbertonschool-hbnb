@@ -3,8 +3,8 @@ from werkzeug.security import generate_password_hash
 from enum import Enum
 
 class PetType(Enum):
-		CHIEN = 1
-		CHAT = 2 
+		DOG = 1
+		CAT = 2 
 		OTHERS = 3
 
 
