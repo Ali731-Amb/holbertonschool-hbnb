@@ -20,7 +20,7 @@ class AmenityList(Resource):
         amenity_data = api.payload
         return facade.create_amenity(amenity_data), 201
 
-@api.marshal_list_with(amenity_model)
+@api.marshal_with(amenity_model)
 @api.response(200, 'List of amenities retrieved successfully')
 def get(self):
 	"""Retrieve a list of all amenities"""
