@@ -5,7 +5,7 @@ api = Namespace('amenities', description='Amenity operations')
 
 amenity_model = api.model('Amenity', {
     'id': fields.String(readOnly=True, description='The unique identifier of the amenity'),
-    'name': fields.String(required=True, description='Name of the amenity')
+    'name': fields.String(required=True, min_length=1, description='Name of the amenity')
 })
 
 @api.route('/')
