@@ -13,6 +13,8 @@ class Amenity(BaseModel):
 	def name(self, value):
 		if not isinstance(value, str):
 			raise ValueError("Amenity name must be a string")
+		if not value.strip(): 
+			raise ValueError("Amenity name cannot be empty")
 		if len(value) > 50:
 			raise ValueError("Amenity name must be under 50 characters")
 		self._name = value
