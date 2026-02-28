@@ -1,5 +1,5 @@
 from .base_model import BaseModel
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from enum import Enum
 
 class PetType(Enum):
@@ -90,6 +90,10 @@ class User(BaseModel):
 		if not has_digit:
 			raise ValueError("A number is missing")
 		return generate_password_hash(password)
+	
+	def verify_password(self, password_to_check):
+		"""Check password"""
+		return check_password_hash(self._password, password_to_check)
 
 #------------------------ Admin ------------------------------
 	@property
