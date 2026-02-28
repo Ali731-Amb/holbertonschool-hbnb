@@ -26,6 +26,7 @@ class HBnBFacade:
                     setattr(user, key, value)
                 elif getattr(user, key) != value:
                     setattr(user, key, value)
+        user.save()
         self.user_repo.update(user)
         return user
 
@@ -124,6 +125,7 @@ class HBnBFacade:
         for key, value in amenity_data.items():
             if hasattr(amenity, key):
                 setattr(amenity, key, value)
+        amenity.save()
         self.amenity_repo.update(amenity)
         return amenity
 
@@ -150,7 +152,9 @@ class HBnBFacade:
     def update_review(self, review_id, review_data):
         review = self.get_review(review_id)
         for key, value in review_data.items():
-            setattr(review, key, value)
+            if hasattr(review, key):
+                setattr(review, key, value)
+        review.save()
         self.review_repo.update(review)
         return review
 
