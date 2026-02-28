@@ -6,8 +6,8 @@ api = Namespace('users', description='User operations')
 # Define the user model for input validation and documentation
 user_model = api.model('User', {
     'id': fields.String(readOnly=True, description='The unique identifier of the user'),
-    'first_name': fields.String(required=True, description='First name of the user'),
-    'last_name': fields.String(required=True, description='Last name of the user'),
+    'first_name': fields.String(required=True, min_lenght=1, description='First name of the user'),
+    'last_name': fields.String(required=True, min_lenght=1, description='Last name of the user'),
     'email': fields.String(required=True, description='Email of the user'),
     'pets': fields.String(description='Pet of the user', enum=['DOG', 'CAT', 'OTHERS'])
     })
