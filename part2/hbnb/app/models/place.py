@@ -10,8 +10,8 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner
-        self.reviews = []  # List to store related reviews
-        self.amenities = []  # List to store related amenities
+        self.reviews = []
+        self.amenities = []
 
 
 #----------------- Title -----------------
@@ -37,6 +37,7 @@ class Place(BaseModel):
         if value is not None and not isinstance(value, str):
             raise ValueError("Description must be a string or None")
         self._description = value
+
 #------------------Price -----------------
     @property
     def price(self):
@@ -75,6 +76,7 @@ class Place(BaseModel):
         if value < -180.0 or value > 180.0:
             raise ValueError("The longitude must be between -180.0 and 180")
         self._longitude = value
+
 #----------------Owner--------------------
     @property
     def owner(self):
@@ -85,6 +87,7 @@ class Place(BaseModel):
         if not isinstance(value, User):
             raise TypeError("The owner must belong to the user class")
         self._owner = value
+
 #----------------Review------------------
     def add_review(self, review):
         """Add a review to the place."""
