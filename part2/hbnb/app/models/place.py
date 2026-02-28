@@ -91,10 +91,16 @@ class Place(BaseModel):
         self.reviews.append(review)
 
 #----------------Amenity------------------
-    def add_amenity(self, amenity):
+    @property
+    def amenities(self, amenity):
+        return self._amenity 
+    
+    @amenities.setter
+    def add_amenities(self, value):
         """Add an amenity to the place."""
-        if amenity not in self.amenities:
-            self.amenities.append(amenity)
+        if not isinstance(self, value):
+            raise ValueError("Amenities must be a list")
+        self._amenities = value
 
 
 #---------------------- Dictionnaire ----------------------
@@ -108,5 +114,5 @@ class Place(BaseModel):
             "longitude": self.longitude,
             "owner_id": self.owner.id if self.owner else None,
             "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat()
+            "updated_at": self.updated_at.isoformat(),
             }
