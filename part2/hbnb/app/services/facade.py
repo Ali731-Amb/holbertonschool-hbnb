@@ -131,7 +131,19 @@ class HBnBFacade:
 
 #------------------Reviews--------------------
     def create_review(self, review_data):
-        review = Review(**review_data)
+        user = self.get_user(review_data['user_id'])
+        place = self.get_place(review_data['place_id'])
+        if not user:
+            raise ValueError("User not found")
+        if not place:
+            raise ValueError("Place not found")
+        review = Review(
+            text=review_data['text'],
+            rating=review_data['rating'],
+            user=user,
+            place=place
+        )
+        place.add_review(review)
         self.review_repo.add(review)
         return review
 
@@ -144,17 +156,16 @@ class HBnBFacade:
     def get_all_reviews(self):
         return self.review_repo.get_all()
 
-    def get_reviews_by_place(self, place):
-        self.get_place(place)
+    def get_reviews_by_place(self, place_id):
+        self.get_place(place_id)
         all_reviews = self.review_repo.get_all()
-        return [r for r in all_reviews if r.place == place]
+        return [r for r in all_reviews if r.place.id == place_id]
 
     def update_review(self, review_id, review_data):
         review = self.get_review(review_id)
-        for key, value in review_data.items():
-            if hasattr(review, key):
-                setattr(review, key, value)
-        review.save()
+        for key in ['text', 'rating']:
+            if key in review_data:
+                setattr(review, key, review_data[key])
         self.review_repo.update(review)
         return review
 
