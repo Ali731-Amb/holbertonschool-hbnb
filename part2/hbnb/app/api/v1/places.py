@@ -38,11 +38,11 @@ review_model = api.model('Review',{
 @api.route('/')
 class PlaceList(Resource):
     @api.expect(place_model)
+    @api.marshal_with(place_model, code=201)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
-        place_data = api.payload #on utilise pas ça !! 
         try: 
             new_place = facade.create_place(api.payload)
             return new_place, 201
