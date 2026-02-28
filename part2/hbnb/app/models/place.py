@@ -10,8 +10,8 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner
-        self.reviews = []
-        self.amenities = []
+        self._reviews = []
+        self._amenities = []
 
 
 #----------------- Title -----------------
@@ -91,7 +91,7 @@ class Place(BaseModel):
 #----------------Review------------------
     def add_review(self, review):
         """Add a review to the place."""
-        self.reviews.append(review)
+        self._reviews.append(review)
 
 #----------------Amenity------------------
     @property
