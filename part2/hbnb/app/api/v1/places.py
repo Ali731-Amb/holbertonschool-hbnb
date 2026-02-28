@@ -18,21 +18,21 @@ user_model = api.model('PlaceUser', {
 
 # Define the place model for input validation and documentation
 place_model = api.model('Place', {
-    'title': fields.String(required=True, description='Title of the place'),
-    'description': fields.String(description='Description of the place'),
-    'price': fields.Float(required=True, description='Price per night'),
+    'title': fields.String(required=True, min_length=1, description='Title of the place'),
+    'description': fields.String(min_length=1, description='Description of the place'),
+    'price': fields.Float(required=True, min_length=1, description='Price per night'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+    'amenities': fields.List(fields.String, min_length=1, required=True, description="List of amenities ID's")
 })
 
 #Define the review model for input validation and documentation 
 review_model = api.model('Review',{
-    'text' : fields.String(required=True, description='Title of the review'),
-    'rating' : fields.Integer(required=True, description='Rating of the place from 1 to 5'),
-    'place' : fields.String(required=True, description='Place of the review'),
-    'user' : fields.String(required=True, description='User of the place')
+    'text' : fields.String(required=True, min_length=1, description='Title of the review'),
+    'rating' : fields.Integer(required=True, min_length=1, description='Rating of the place from 1 to 5'),
+    'place' : fields.String(required=True, min_length=1, description='Place of the review'),
+    'user' : fields.String(required=True, min_length=1, description='User of the place')
 })
 
 @api.route('/')
