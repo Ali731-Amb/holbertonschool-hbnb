@@ -9,8 +9,8 @@ class PetType(Enum):
 
 
 class User(BaseModel):
-	def __init__(self, first_name, last_name, email, password = None, is_admin = False, pets = None):
-		super().__init__()
+	def __init__(self, first_name, last_name, email, password = None, is_admin = False, pets = None, **kwargs):
+		super().__init__(**kwargs)
 		if not first_name or len(first_name.strip()) == 0:
 			raise ValueError("First name can't be empty")
 		if not last_name or len(last_name.strip()) == 0:

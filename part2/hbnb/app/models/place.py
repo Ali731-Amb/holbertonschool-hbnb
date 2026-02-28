@@ -2,8 +2,8 @@ from .base_model import BaseModel
 from .user import User
 
 class Place(BaseModel):
-    def __init__(self, title, price, latitude, longitude, owner, description=None):
-        super().__init__()
+    def __init__(self, title, price, latitude, longitude, owner, description=None, **kwargs):
+        super().__init__(**kwargs)
         self.title = title
         self.description = description
         self.price = price
@@ -95,15 +95,24 @@ class Place(BaseModel):
 
 #----------------Amenity------------------
     @property
-    def amenities(self, amenity):
-        return self._amenity 
+    def amenities(self):
+        return self._amenities 
     
     @amenities.setter
-    def add_amenities(self, value):
+    def amenities(self, value):
         """Add an amenity to the place."""
-        if not isinstance(self, value):
+        if not isinstance(value, list):
             raise ValueError("Amenities must be a list")
         self._amenities = value
+    
+    def add_amenity(self, amenity):
+        """Add an amenity to the place if it's not already present."""
+        if type(amenity).__name__ != 'Amenity':
+            raise ValueError("The object must be an instance of Amenity")
+        if not hasattr(self, '_amenities') or self._amenities is None:
+            self._amenities = []
+        if amenity not in self._amenities:
+            self._amenities.append(amenity)
 
 
 #---------------------- Dictionnaire ----------------------

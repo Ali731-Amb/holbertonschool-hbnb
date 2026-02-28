@@ -1,8 +1,8 @@
 from .base_model import BaseModel
 
 class Review(BaseModel):
-	def __init__(self, text, rating, place, user):
-		super().__init__()
+	def __init__(self, text, rating, place, user, **kwargs):
+		super().__init__(**kwargs)
 		self.text = text 
 		self.rating = rating 
 		self.place = place
