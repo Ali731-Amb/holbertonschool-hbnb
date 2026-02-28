@@ -11,8 +11,8 @@ amenity_model = api.model('PlaceAmenity', {
 
 user_model = api.model('PlaceUser', {
     'id': fields.String(description='User ID'),
-    'first_name': fields.String(description='First name of the owner'),
-    'last_name': fields.String(description='Last name of the owner'),
+    'first_name': fields.String(min_lenght=1, description='First name of the owner'),
+    'last_name': fields.String(min_lenght=1, description='Last name of the owner'),
     'email': fields.String(description='Email of the owner')
 })
 
