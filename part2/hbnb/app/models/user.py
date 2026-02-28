@@ -11,6 +11,10 @@ class PetType(Enum):
 class User(BaseModel):
 	def __init__(self, first_name, last_name, email, password = None, is_admin = False, pets = None):
 		super().__init__()
+		if not first_name or len(first_name.strip()) == 0:
+			raise ValueError("First name can't be empty")
+		if not last_name or len(last_name.strip()) == 0:
+			raise ValueError("Last name can't be empty")
 		self.first_name = first_name
 		self.last_name = last_name
 		self.email = email
