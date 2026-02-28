@@ -18,6 +18,7 @@ user_model = api.model('PlaceUser', {
 
 # Define the place model for input validation and documentation
 place_model = api.model('Place', {
+    'id': fields.String(readOnly=True, description='The unique identifier of the place'),
     'title': fields.String(required=True, min_length=1, description='Title of the place'),
     'description': fields.String(min_length=1, description='Description of the place'),
     'price': fields.Float(required=True, min_length=1, description='Price per night'),
