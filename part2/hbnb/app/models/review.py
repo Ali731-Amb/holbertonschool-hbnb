@@ -44,8 +44,8 @@ class Review(BaseModel):
 	
 	@place.setter
 	def place(self, value):
-		if not isinstance(value, str):
-			raise ValueError("Place must be a string of characters")
+		if type(value).__name__ != 'Place':
+			raise ValueError("Place must be an instance of Place class")
 		self._place = value
 
 #--------------- User -------------------
@@ -55,8 +55,8 @@ class Review(BaseModel):
 	
 	@user.setter
 	def user(self, value):
-		if not isinstance(value, str):
-			raise ValueError("User must be a string of characters")
+		if type(value).__name__ != 'User':
+			raise ValueError("User must be an instance of User class")
 		self._user = value
 
 #------------------Dictionnaire--------------------
