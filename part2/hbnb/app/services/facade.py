@@ -136,15 +136,13 @@ class HBnBFacade:
 
         if not user or not place:
             raise ValueError("User or Place not found")
-
-        from app.models.review import Review
         new_review = Review(
             text=review_data['text'],
             rating=review_data['rating'],
             user=user,
             place=place
         )
-        
+        place.add_review(new_review)
         self.review_repo.add(new_review)
         return new_review
 
