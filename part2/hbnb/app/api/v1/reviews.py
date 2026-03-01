@@ -5,10 +5,11 @@ api = Namespace('reviews', description='Review operations')
 
 # Define the review model for input validation and documentation
 review_model = api.model('Review', {
+    'id': fields.String(readOnly=True, description='Review ID'),
     'text': fields.String(required=True, description='Text of the review'),
     'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
-    'user_id': fields.String(required=True, description='ID of the user'),
-    'place_id': fields.String(required=True, description='ID of the place')
+    'user_id': fields.String(attribute='user.id', description='User ID'),
+    'place_id': fields.String(attribute='place.id', description='Place ID')
 })
 
 @api.route('/')
@@ -20,11 +21,11 @@ class ReviewList(Resource):
     def post(self):
         """Register a new review"""
         review_data = api.payload
-        user = facade.get_user(review_data['user_id'])
-        place = facade.get_place(review_data['place_id'])
-        if not user or not place: 
-            return{'error' : 'User or Place not found'}, 400
-        return facade.create_review(review_data), 201
+        try:
+            new_review = facade.create_review(review_data)
+            return new_review, 201
+        except ValueError as e:
+            api.abort(400, str(e))
 
     @api.marshal_list_with(review_model)
     @api.response(200, 'List of reviews retrieved successfully')
