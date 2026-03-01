@@ -90,8 +90,12 @@ class Place(BaseModel):
 
 #----------------Review------------------
     def add_review(self, review):
-        """Add a review to the place."""
-        self._reviews.append(review)
+        """Add a review to the place"""
+        if type(review).__name__ != 'Review':
+            raise ValueError("Object must be a Review")
+        if review not in self._reviews:
+            self._reviews.append(review)
+
 
 #----------------Amenity------------------
     @property
