@@ -30,15 +30,16 @@ place_model = api.model('Place', {
         required=True, 
         min_length=1,
         description="List of amenities IDs"
-    )
-})
+    ),
+    'reviews': fields.List(fields.String(attribute='id'), attribute='_reviews')})
 
 #Define the review model for input validation and documentation 
-review_model = api.model('Review',{
-    'text' : fields.String(required=True, min_length=1, description='Title of the review'),
-    'rating' : fields.Integer(required=True, min_length=1, description='Rating of the place from 1 to 5'),
-    'place' : fields.String(required=True, min_length=1, description='Place of the review'),
-    'user' : fields.String(required=True, min_length=1, description='User of the place')
+review_model = api.model('Review', {
+    'id': fields.String(readOnly=True, description='Review ID'),
+    'text': fields.String(required=True, description='Text of the review'),
+    'rating': fields.Integer(required=True, description='Rating (1-5)'),
+    'user_id': fields.String(attribute='user.id', description='User ID'),
+    'place_id': fields.String(attribute='place.id', description='Place ID')
 })
 
 @api.route('/')
