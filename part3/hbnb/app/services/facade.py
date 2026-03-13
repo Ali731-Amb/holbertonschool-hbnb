@@ -22,11 +22,8 @@ class HBnBFacade:
         user = self.get_user(user_id)
         for key, value in user_data.items():
             if hasattr(user, key):
-                if key == 'password':
                     setattr(user, key, value)
-                elif getattr(user, key) != value:
-                    setattr(user, key, value)
-        user.save()
+        #_____ user.save() à vérifier !! 
         self.user_repo.update(user)
         return user
 
