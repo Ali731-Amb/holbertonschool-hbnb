@@ -1,11 +1,12 @@
 from .base_model import BaseModel
-from werkzeug.security import generate_password_hash, check_password_hash
 from enum import Enum
+from app import bcrypt
 
 class PetType(Enum):
 		DOG = 1
 		CAT = 2 
 		OTHERS = 3
+
 
 
 class User(BaseModel):
@@ -19,7 +20,7 @@ class User(BaseModel):
 		self.last_name = last_name
 		self.email = email
 		self.is_admin = is_admin
-		self.password = password if password else "Default123"
+		self.password = password if password else "Default12345"
 		self.pets = pets
 
 #----------------First name ----------------
@@ -72,7 +73,8 @@ class User(BaseModel):
 
 	@password.setter
 	def password(self, value):
-		self._password = User.validate_password(value)
+		validated_password = User.validate_password(value)
+		self._password = bcrypt.generate_password_hash(validated_password).decode('utf-8')
 
 	@staticmethod
 	def validate_password(password):
@@ -89,11 +91,12 @@ class User(BaseModel):
 			raise ValueError("A capital letter is missing ")
 		if not has_digit:
 			raise ValueError("A number is missing")
-		return generate_password_hash(password)
+		return password
 	
 	def verify_password(self, password_to_check):
 		"""Check password"""
-		return check_password_hash(self._password, password_to_check)
+		return bcrypt.check_password_hash(self._password, password_to_check)
+
 
 #------------------------ Admin ------------------------------
 	@property
@@ -133,5 +136,7 @@ class User(BaseModel):
 			"last_name": self.last_name,
 			"email": self.email,
 			"created_at": self.created_at.isoformat(),
-			"updated_at": self.updated_at.isoformat()
+			"updated_at": self.updated_at.isoformat(),
+			"Pets" : self.pets,
 			}
+
