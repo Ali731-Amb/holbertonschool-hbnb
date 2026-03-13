@@ -7,8 +7,6 @@ class PetType(Enum):
 		CAT = 2 
 		OTHERS = 3
 
-
-
 class User(BaseModel):
 	def __init__(self, first_name, last_name, email, password = None, is_admin = False, pets = None, **kwargs):
 		super().__init__(**kwargs)
@@ -135,8 +133,8 @@ class User(BaseModel):
 			"first_name": self.first_name,
 			"last_name": self.last_name,
 			"email": self.email,
+			"Pets" : self.pets.name if self.pets else None,
 			"created_at": self.created_at.isoformat(),
 			"updated_at": self.updated_at.isoformat(),
-			"Pets" : self.pets,
 			}
 
