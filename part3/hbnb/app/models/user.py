@@ -2,139 +2,146 @@ from .base_model import BaseModel
 from enum import Enum
 from app import bcrypt
 
+
 class PetType(Enum):
-		DOG = 1
-		CAT = 2 
-		OTHERS = 3
+    DOG = 1
+    CAT = 2
+    OTHERS = 3
+
 
 class User(BaseModel):
-	def __init__(self, first_name, last_name, email, password = None, is_admin = False, pets = None, **kwargs):
-		super().__init__(**kwargs)
-		if not first_name or len(first_name.strip()) == 0:
-			raise ValueError("First name can't be empty")
-		if not last_name or len(last_name.strip()) == 0:
-			raise ValueError("Last name can't be empty")
-		self.first_name = first_name
-		self.last_name = last_name
-		self.email = email
-		self.is_admin = is_admin
-		self.password = password if password else "Default12345"
-		self.pets = pets
+    def __init__(self, first_name, last_name, email, password=None, is_admin=False, pets=None, **kwargs):
+        super().__init__(**kwargs)
+        if not first_name or len(first_name.strip()) == 0:
+            raise ValueError("First name can't be empty")
+        if not last_name or len(last_name.strip()) == 0:
+            raise ValueError("Last name can't be empty")
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.is_admin = is_admin
+        self.password = password if password else "Default12345"
+        self.pets = pets
 
-#----------------First name ----------------
-	@property
-	def first_name(self):
-		return self._first_name
+# ----------------First name ----------------
+    @property
+    def first_name(self):
+        return self._first_name
 
-	@first_name.setter
-	def first_name(self, value):
-		if len(value) > 50:
-			raise ValueError("First name must be under 50 characters")
-		self._first_name = value
+    @first_name.setter
+    def first_name(self, value):
+        if len(value) > 50:
+            raise ValueError("First name must be under 50 characters")
+        self._first_name = value
 
-#---------------Last Name -----------------
-	@property
-	def last_name(self):
-		return self._last_name
-	
-	@last_name.setter
-	def last_name(self, value):
-		if len(value) > 50:
-			raise ValueError("Last name must be under 50 characters")
-		self._last_name = value 
+# ---------------Last Name -----------------
+    @property
+    def last_name(self):
+        return self._last_name
 
-#--------------------- Email -----------------
+    @last_name.setter
+    def last_name(self, value):
+        if len(value) > 50:
+            raise ValueError("Last name must be under 50 characters")
+        self._last_name = value
 
-	@property
-	def email(self):
-		return self._email
-	
-	@email.setter 
-	def email(self, value):
-		self._email = User.validate_email(value)
+# --------------------- Email -----------------
 
-	@staticmethod
-	def validate_email(email):
-		parts = email.split('@')
-		if len(parts) != 2:
-			raise ValueError("Email invalide")
-		if not email.endswith(".com") and not email.endswith(".fr"):
-			raise ValueError("Email invalide")
-		if parts[0] =="" or parts [1] == "" or parts[1][0] ==".":
-			raise ValueError("Email invalide")
-		return email
+    @property
+    def email(self):
+        return self._email
 
-#------------------- Password ----------------------------
-	@property
-	def password(self):
-		raise AttributeError("Password is not a readable attribute")
+    @email.setter
+    def email(self, value):
+        self._email = User.validate_email(value)
 
-	@password.setter
-	def password(self, value):
-		validated_password = User.validate_password(value)
-		self._password = bcrypt.generate_password_hash(validated_password).decode('utf-8')
+    @staticmethod
+    def validate_email(email):
+        parts = email.split('@')
+        if len(parts) != 2:
+            raise ValueError("Email invalide")
+        if not email.endswith(".com") and not email.endswith(".fr"):
+            raise ValueError("Email invalide")
+        if parts[0] == "" or parts[1] == "" or parts[1][0] == ".":
+            raise ValueError("Email invalide")
+        return email
 
-	@staticmethod
-	def validate_password(password):
-		if len(password) < 8:
-			raise ValueError("Password invalide")
-		has_digit = False
-		has_upper = False
-		for char in password:
-			if char.isupper():
-				has_upper = True
-			if char.isdigit():
-				has_digit = True
-		if not has_upper:
-			raise ValueError("A capital letter is missing ")
-		if not has_digit:
-			raise ValueError("A number is missing")
-		return password
-	
-	def verify_password(self, password_to_check):
-		"""Check password"""
-		return bcrypt.check_password_hash(self._password, password_to_check)
+# ------------------- Password ----------------------------
+    @property
+    def password(self):
+        raise AttributeError("Password is not a readable attribute")
+
+    @password.setter
+    def password(self, value):
+        validated_password = User.validate_password(value)
+        self._password = bcrypt.generate_password_hash(
+            validated_password).decode('utf-8')
+
+    @staticmethod
+    def validate_password(password):
+        if len(password) < 8:
+            raise ValueError("Password invalide")
+        has_digit = False
+        has_upper = False
+        for char in password:
+            if char.isupper():
+                has_upper = True
+            if char.isdigit():
+                has_digit = True
+        if not has_upper:
+            raise ValueError("A capital letter is missing ")
+        if not has_digit:
+            raise ValueError("A number is missing")
+        return password
+
+    def verify_password(self, password_to_check):
+        """Check password"""
+        return bcrypt.check_password_hash(self._password, password_to_check)
+
+    def hash_password(self, password):
+        """Hashes the password before storing it."""
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
 
-#------------------------ Admin ------------------------------
-	@property
-	def is_admin(self):
-		return self._is_admin
-	
-	@is_admin.setter
-	def is_admin(self, value):
-		if not isinstance(value, bool):
-			raise ValueError("is_admin must be a boolean")
-		self._is_admin = value
+# ------------------------ Admin ------------------------------
 
-#-----------------Pets-------------------------
-	@property
-	def pets(self):
-		return self._pets
-	
-	@pets.setter
-	def pets(self, value):
-		if value is None:
-			self._pets = None
-		elif isinstance(value, PetType):
-			self._pets = value
-		elif isinstance(value, str):
-			try:
-				self._pets = PetType[value.upper()] 
-			except KeyError:
-				raise ValueError(f"'{value}' is not valid animal.")
-		else:
-			raise ValueError("Format animal invalide.")
-		
-#--------------------Dictionnaire------------------------
-	def to_dict(self):
-		return {
-			"id": self.id,
-			"first_name": self.first_name,
-			"last_name": self.last_name,
-			"email": self.email,
-			"Pets" : self.pets.name if self.pets else None,
-			"created_at": self.created_at.isoformat(),
-			"updated_at": self.updated_at.isoformat(),
-			}
+    @property
+    def is_admin(self):
+        return self._is_admin
 
+    @is_admin.setter
+    def is_admin(self, value):
+        if not isinstance(value, bool):
+            raise ValueError("is_admin must be a boolean")
+        self._is_admin = value
+
+# -----------------Pets-------------------------
+    @property
+    def pets(self):
+        return self._pets
+
+    @pets.setter
+    def pets(self, value):
+        if value is None:
+            self._pets = None
+        elif isinstance(value, PetType):
+            self._pets = value
+        elif isinstance(value, str):
+            try:
+                self._pets = PetType[value.upper()]
+            except KeyError:
+                raise ValueError(f"'{value}' is not valid animal.")
+        else:
+            raise ValueError("Format animal invalide.")
+
+# --------------------Dictionnaire------------------------
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "Pets": self.pets.name if self.pets else None,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+        }
