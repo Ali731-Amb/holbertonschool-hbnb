@@ -10,7 +10,7 @@ class PetType(Enum):
 
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, password=None, is_admin=False, pets=None, **kwargs):
+    def __init__(self, first_name, last_name, email, password, is_admin=False, pets=None, **kwargs):
         super().__init__(**kwargs)
         if not first_name or len(first_name.strip()) == 0:
             raise ValueError("First name can't be empty")
@@ -20,7 +20,7 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
-        self.password = password if password else "Default12345"
+        self.password = password
         self.pets = pets
 
 # ----------------First name ----------------
