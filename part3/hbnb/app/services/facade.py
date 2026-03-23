@@ -23,7 +23,6 @@ class HBnBFacade:
         for key, value in user_data.items():
             if hasattr(user, key):
                     setattr(user, key, value)
-        #_____ user.save() à vérifier !! 
         self.user_repo.update(user)
         return user
 
