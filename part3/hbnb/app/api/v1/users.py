@@ -1,6 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask import request, jsonify, abort
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('users', description='User operations')
 
@@ -34,7 +35,6 @@ class UserList(Resource):
     def post(self):
         """Register a new user"""
         user_data = api.payload
-        # Simulate email uniqueness check (to be replaced by real validation with persistence)
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
@@ -83,3 +83,20 @@ class UserResource(Resource):
         if delete_user is False: 
             return {'error' : 'User not found'}, 404
         return {'message' : 'User deleted successfully'}, 200
+    
+    @jwt_required()
+    def put(self, user_id):
+        """Update user information"""
+        current_user_id = get_jwt_identity()
+        if current_user_id != user_id:
+            return {'error': 'Unauthorized action. You can only update your own profile.'}, 403
+        user_data = api.payload
+        if 'email' in user_data:
+            return {'error': 'Email cannot be modified'}, 400
+        try:
+            updated_user = facade.update_user(user_id, user_data)
+            if not updated_user:
+                return {'error': 'User not found'}, 404
+            return updated_user.to_dict(), 200
+        except Exception as e:
+            return {"error": str(e)}, 400
