@@ -28,6 +28,7 @@ class UserList(Resource):
         'pets': u.pets.name if u.pets else None
                 } for u in users], 200
     
+    @get_jwt_identity()
     @api.expect(user_model, validate=True)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
@@ -35,6 +36,8 @@ class UserList(Resource):
     def post(self):
         """Register a new user"""
         user_data = api.payload
+        if "password" not in user_data or not user_data["password"]:
+            return {'erreur' : 'A password is required'}, 400
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
