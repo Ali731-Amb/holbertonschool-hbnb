@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Place operations')
 
@@ -44,14 +45,18 @@ review_model = api.model('Review', {
 
 @api.route('/')
 class PlaceList(Resource):
+    @jwt_required()
     @api.expect(place_model)
     @api.marshal_with(place_model, code=201)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
-        try: 
-            new_place = facade.create_place(api.payload)
+        current_user_id = get_jwt_identity()
+        data = api.payload
+        data['owner_id'] = current_user_id
+        try:
+            new_place = facade.create_place(data)
             return new_place, 201
         except ValueError as e:
             api.abort(400, str(e))
@@ -66,6 +71,7 @@ class PlaceList(Resource):
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
+    @jwt_required()
     @api.marshal_with(place_model)
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
@@ -85,17 +91,17 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place's information"""
-        # Placeholder for the logic to update a place by ID
+        current_user_id = get_jwt_identity()
+        place = facade.update_place(place_id)
+        if not place:
+            api.abort(404, "Place not found")
+        if place.owner_id != current_user_id:
+            api.abort(403, "Not authorized to modify this place")
         try:
-            place_data = api.payload
-            place = facade.update_place(place_id, place_data)
-            return place, 200
+            updated_place = facade.update_place(place_id, api.payload)
+            return updated_place, 200
         except ValueError as e:
-            message = str(e)
-            if "not found" in message:
-                api.abort(404, message)
-            else:
-                api.abort(400, message)
+            api.abort(400, str(e))
 
 
 
