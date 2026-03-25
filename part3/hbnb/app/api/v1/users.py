@@ -14,6 +14,12 @@ user_model = api.model('User', {
     'pets': fields.String(description='Pet of the user', enum=['DOG', 'CAT', 'OTHERS'])
     })
 
+user_update_model = api.model('User', {
+    'id': fields.String(readOnly=True, description='The unique identifier of the user'),
+    'first_name': fields.String(required=True, min_lenght=1, description='First name of the user'),
+    'last_name': fields.String(required=True, min_lenght=1, description='Last name of the user'),
+    })
+
 @api.route('/')
 class UserList(Resource): 
     @api.response(200, 'Success')
@@ -59,33 +65,40 @@ class UserResource(Resource):
         return user.to_dict(), 200
     
     @jwt_required()
-    @api.expect(user_model, validate = True)
-    @api.response(200, 'User successfully upadated')
+    @api.expect(user_update_model, validate=True)
+    @api.response(200, 'User successfully updated')
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data')
-    @api.response(403, 'Unautorized action')
+    @api.response(403, 'Unauthorized action')
+    @api.response(500, 'Internal server error')
     def put(self, user_id):
         current_user_id = get_jwt_identity()
         update_data = api.payload
         user = facade.get_user(user_id)
-        if not update_data:
-            api.abort(400,'Invalid input data')
-        if not user : 
+
+        if not user:
             api.abort(404, 'User not found')
+
         if user_id != current_user_id:
             api.abort(403, 'You can only update your own informations')
-        if "email" in update_data:
-            api.abort(403, 'You cannot change your email')
-        if "password" in update_data:
-            api.abort(403, 'You cannot change your password')
+
+        if not update_data:
+            api.abort(400, 'Invalid input data')
+
+        ALLOWED_FIELDS = ['first_name', 'last_name']
+        if not all(field in ALLOWED_FIELDS for field in update_data):
+            api.abort(403, f"Only {', '.join(ALLOWED_FIELDS)} can be updated")
+
         try:
             updated_data = facade.update_user(user_id, update_data)
             return {
-                'message' : 'User update sucessefully',
-                'User' : updated_data
-                    }, 200
+                'message': 'User update successfully',
+                'user': updated_data
+            }, 200
         except ValueError as e:
             api.abort(400, str(e))
+        except Exception as e:
+            api.abort(500, "An unexpected error occurred during update")
 
     @api.response(200, 'User successfully deleted')
     @api.response(400, 'Invalid input data')
@@ -94,20 +107,3 @@ class UserResource(Resource):
         if delete_user is False: 
             return {'error' : 'User not found'}, 404
         return {'message' : 'User deleted successfully'}, 200
-    
-    @jwt_required()
-    def put(self, user_id):
-        """Update user information"""
-        current_user_id = get_jwt_identity()
-        if current_user_id != user_id:
-            return {'error': 'Unauthorized action. You can only update your own profile.'}, 403
-        user_data = api.payload
-        if 'email' in user_data:
-            return {'error': 'Email cannot be modified'}, 400
-        try:
-            updated_user = facade.update_user(user_id, user_data)
-            if not updated_user:
-                return {'error': 'User not found'}, 404
-            return updated_user.to_dict(), 200
-        except Exception as e:
-            return {"error": str(e)}, 400
