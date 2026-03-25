@@ -58,26 +58,34 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
         return user.to_dict(), 200
     
+    @jwt_required()
     @api.expect(user_model, validate = True)
     @api.response(200, 'User successfully upadated')
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unautorized action')
     def put(self, user_id):
-        user_data = api.payload
-        if 'email' in user_data:
-            existing_user = facade.get_user_by_email(user_data['email'])
-            if existing_user and existing_user.id != user_id:
-                return {'error' : 'Email is already registered'}, 400
-        updated_user = facade.update_user(user_id, user_data)
-        if updated_user is None: 
-            return {'error' : 'User not found'}, 404
-        return{
-            'id': updated_user.id, 
-            'first_name': updated_user.first_name, 
-            'last_name': updated_user.last_name, 
-            'email': updated_user.email,
-            'pets': updated_user.pets.name if updated_user.pets else None
-                } , 200 
+        current_user_id = get_jwt_identity()
+        update_data = api.payload
+        user = facade.get_user(user_id)
+        if not update_data:
+            api.abort(400,'Invalid input data')
+        if not user : 
+            api.abort(404, 'User not found')
+        if user_id != current_user_id:
+            api.abort(403, 'You can only update your own informations')
+        if "email" in update_data:
+            api.abort(403, 'You cannot change your email')
+        if "password" in update_data:
+            api.abort(403, 'You cannot change your password')
+        try:
+            updated_data = facade.update_user(user_id, update_data)
+            return {
+                'message' : 'User update sucessefully',
+                'User' : updated_data
+                    }, 200
+        except ValueError as e:
+            api.abort(400, str(e))
 
     @api.response(200, 'User successfully deleted')
     @api.response(400, 'Invalid input data')
