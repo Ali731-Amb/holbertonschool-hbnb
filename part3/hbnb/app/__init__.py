@@ -21,8 +21,6 @@ def create_app(config_class=config.DevelopmentConfig):
         app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///hbnb.db')
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-        db.init_app(app)
-
         # Configuration de l'API (Swagger)
         api = Api(app, 
         version='1.0', 
@@ -37,6 +35,7 @@ def create_app(config_class=config.DevelopmentConfig):
         api.add_namespace(reviews_ns, path='/api/v1/reviews')
         api.add_namespace(auth_ns, path='/api/v1/auth')
 
+        db.init_app(app)
         jwt.init_app(app)
         bcrypt.init_app(app)
         return app
