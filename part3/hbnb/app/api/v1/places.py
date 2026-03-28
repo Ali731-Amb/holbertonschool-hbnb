@@ -153,7 +153,6 @@ class AdminPlaceModify(Resource):
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
-    @api.response(500, "An unexpected error occurred")
     def put(self, place_id):
         current_user = get_jwt_identity()
         is_admin = current_user.get('is_admin', False)
