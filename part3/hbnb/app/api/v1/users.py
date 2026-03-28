@@ -102,3 +102,46 @@ class UserResource(Resource):
         if delete_user is False: 
             return {'error' : 'User not found'}, 404
         return {'message' : 'User deleted successfully'}, 200
+
+#-------------------- Admin -----------------
+
+@api.route('/users/')
+class AdminUserCreate(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        if not current_user.get('is_admin'):
+            return {'error': 'Admin privileges required'}, 403
+        user_data = api.payload
+        email = user_data.get('email')
+        if facade.get_user_by_email(email):
+            return {'error': 'Email already registered'}, 400
+        new_user = facade.create_user(user_data)
+        return {
+        'id': new_user.id, 
+        'message': 'User successfully registered'
+        }, 201
+    
+@api.route('/users/<user_id>')
+class AdminUserModify(Resource):
+    @jwt_required()
+    def put(self, user_id):
+        current_user = get_jwt_identity()
+        if not current_user.get('is_admin'):
+            return {'error': 'Admin privileges required'}, 403
+        data = api.payload
+        email = data.get('email')
+        if email:
+            existing_user = facade.get_user_by_email(email)
+            if existing_user and existing_user.id != user_id:
+                return {'error': 'Email already in use'}, 400
+        try:
+            updated_data = facade.update_user(user_id, data)
+            return {
+                'message': 'User update successfully',
+                'user': updated_data
+            }, 200
+        except ValueError as e:
+            api.abort(400, str(e))
+        except Exception as e:
+            api.abort(500, "An unexpected error occurred during update")
