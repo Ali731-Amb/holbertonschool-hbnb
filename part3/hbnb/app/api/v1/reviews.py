@@ -95,6 +95,7 @@ class ReviewResource(Resource):
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
     @api.response(403, 'Unautorized action')
+    @api.response(500, 'An error occured during deltion')
     def delete(self, review_id):
         """Delete a review"""
         current_user_id = get_jwt_identity()
