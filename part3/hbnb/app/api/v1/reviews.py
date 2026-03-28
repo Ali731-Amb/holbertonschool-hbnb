@@ -36,6 +36,7 @@ class ReviewList(Resource):
         review_data['user_id'] = current_user_id
         try:
             new_review = facade.create_review(review_data)
+            return new_review, 200
         except ValueError as e : 
             api.abort(400, str(e))            
 
@@ -68,11 +69,17 @@ class ReviewResource(Resource):
         """Update a review's information"""
         current_user_id = get_jwt_identity()
         update_data = api.payload
+        if not update_data:
+            api.abort(404, 'Review not found')
         review = facade.get_review(review_id)
         if not review:
             api.abort(404, 'Review not found')
-        if review.user_id != current_user_id:
+        if str(review.user_id) != str(current_user_id):
             api.abort(403, 'You can update only your own review')
+        ALLOWED_FIELDS = ('text', 'rating')
+        invalid_fields = [f for f in update_data if f not in ALLOWED_FIELDS]
+        if invalid_fields:
+            api.abort(400, f"Fields not allowed: {', '.join(invalid_fields)}")
         try: 
             updated_review = facade.update_review(review_id, update_data)
             if not updated_review: 
@@ -94,10 +101,9 @@ class ReviewResource(Resource):
         review = facade.get_review(review_id)
         if not review:
             api.abort(404, 'Review not found')
-        if review.user_id != current_user_id:
+        if str(review.user_id) != str(current_user_id):
             api.abort(403, 'You can only delete your own review')
         sucess = facade.delete_review(review_id)
         if not sucess: 
             api.abort(500, 'An error occured during deltion')
         return {'message' : 'Review deleted successfully'}, 204
-    """Code 204 a voir, + tests"""
