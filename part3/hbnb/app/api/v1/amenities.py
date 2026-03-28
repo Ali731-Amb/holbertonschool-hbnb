@@ -68,7 +68,6 @@ class AdminAmenityCreate(Resource):
     @api.response(201, 'Amenity successfully created')
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Unauthorized action')
-    @api.response(500, "An unexpected error occurred")
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
