@@ -74,21 +74,16 @@ class UserResource(Resource):
     def put(self, user_id):
         current_user_id = get_jwt_identity()
         update_data = api.payload
-        user = facade.get_user(user_id)
-
-        if not user:
-            api.abort(404, 'User not found')
-
-        if user_id != current_user_id:
-            api.abort(403, 'You can only update your own informations')
-
         if not update_data:
             api.abort(400, 'Invalid input data')
-
+        if str(user_id) != str(current_user_id):
+            api.abort(403, 'You can only update your own informations')
+        user = facade.get_user(user_id)
+        if not user:
+            api.abort(404, 'User not found')
         ALLOWED_FIELDS = ['first_name', 'last_name']
         if not all(field in ALLOWED_FIELDS for field in update_data):
             api.abort(403, f"Only {', '.join(ALLOWED_FIELDS)} can be updated")
-
         try:
             updated_data = facade.update_user(user_id, update_data)
             return {
