@@ -47,19 +47,29 @@ review_model = api.model('Review', {
 class PlaceList(Resource):
     @jwt_required()
     @api.expect(place_model)
-    @api.marshal_with(place_model, code=201)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
+    @api.response(404, 'User not found')
     def post(self):
         """Register a new place"""
         current_user_id = get_jwt_identity()
         data = api.payload
+
+        # 1. Vérifier que l'utilisateur existe
+        user = facade.get_user(current_user_id)
+        if not user:
+            api.abort(404, 'User not found')
+
+        # 2. Injecter l'owner_id dans les données
         data['owner_id'] = current_user_id
+
         try:
             new_place = facade.create_place(data)
             return new_place, 201
         except ValueError as e:
             api.abort(400, str(e))
+        except Exception as e:
+            api.abort(500, "An unexpected error occurred")
 
     @api.marshal_list_with(place_model)
     @api.response(200, 'List of places retrieved successfully')
@@ -77,7 +87,6 @@ class PlaceResource(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get place details by ID"""
-        # Placeholder for the logic to retrieve a place by ID, including associated owner and amenities
         try:
             place = facade.get_place(place_id)
             return place, 200
@@ -92,13 +101,20 @@ class PlaceResource(Resource):
     def put(self, place_id):
         """Update a place's information"""
         current_user_id = get_jwt_identity()
+        update_data = api.payload
+        if not update_data:
+            api.abort(400, 'No data provided')
         place = facade.update_place(place_id)
         if not place:
             api.abort(404, "Place not found")
-        if place.owner_id != current_user_id:
+        if str(place.owner_id) != str(current_user_id):
             api.abort(403, "Not authorized to modify this place")
+        ALLOWED_FIELDS = ('title', 'description', 'price')
+        invalid_fields = [f for f in update_data if f not in ALLOWED_FIELDS]
+        if invalid_fields:
+            api.abort(400, f"Fields not allowed: {', '.join(invalid_fields)}")
         try:
-            updated_place = facade.update_place(place_id, api.payload)
+            updated_place = facade.update_place(place_id, update_data)
             return updated_place, 200
         except ValueError as e:
             api.abort(400, str(e))
