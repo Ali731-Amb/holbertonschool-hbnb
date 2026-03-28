@@ -107,6 +107,7 @@ class UserResource(Resource):
 
 @api.route('/users/')
 class AdminUserCreate(Resource):
+
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
@@ -125,6 +126,10 @@ class AdminUserCreate(Resource):
 @api.route('/users/<user_id>')
 class AdminUserModify(Resource):
     @jwt_required()
+    @api.response(200, 'User update successfully')
+    @api.response(400, 'Email already registered')
+    @api.response(403, 'Unauthorized action')
+    @api.response(500, "An unexpected error occurred during update")
     def put(self, user_id):
         current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
