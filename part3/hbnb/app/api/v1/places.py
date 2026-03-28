@@ -55,15 +55,10 @@ class PlaceList(Resource):
         """Register a new place"""
         current_user_id = get_jwt_identity()
         data = api.payload
-
-        # 1. Vérifier que l'utilisateur existe
         user = facade.get_user(current_user_id)
         if not user:
             api.abort(404, 'User not found')
-
-        # 2. Injecter l'owner_id dans les données
         data['owner_id'] = current_user_id
-
         try:
             new_place = facade.create_place(data)
             return new_place, 201
@@ -76,7 +71,6 @@ class PlaceList(Resource):
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
         """Retrieve a list of all places"""
-        # Placeholder for logic to return a list of all places
         return facade.get_all_places(), 200
 
 
@@ -129,7 +123,6 @@ class PlaceReviewList(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all reviews for a specific place"""
-        # Placeholder for logic to return a list of reviews for a place
         try: 
             reviews = facade.get_reviews_by_place(place_id)
             return reviews, 200
@@ -153,6 +146,7 @@ class AdminPlaceModify(Resource):
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
     def put(self, place_id):
         current_user = get_jwt_identity()
         is_admin = current_user.get('is_admin', False)
