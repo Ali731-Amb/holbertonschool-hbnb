@@ -50,6 +50,7 @@ class PlaceList(Resource):
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     @api.response(404, 'User not found')
+    @api.response(500, "An unexpected error occurred")
     def post(self):
         """Register a new place"""
         current_user_id = get_jwt_identity()
@@ -144,3 +145,25 @@ class PlaceReviewList(Resource):
         except ValueError as e:
             return api.abort(404, str(e))
         return '', 204
+    
+#------------------------ Admin --------------------------
+@api.route('/places/<place_id>')
+class AdminPlaceModify(Resource):
+    @jwt_required()
+    @api.response(200, 'Place updated successfully')
+    @api.response(404, 'Place not found')
+    @api.response(400, 'Invalid input data')
+    @api.response(500, "An unexpected error occurred")
+    def put(self, place_id):
+        current_user = get_jwt_identity()
+        is_admin = current_user.get('is_admin', False)
+        user_id = current_user.get('id')
+        place = facade.get_place(place_id)
+        update_data = api.payload
+        if not is_admin and place.owner_id != user_id:
+            return {'error': 'Unauthorized action'}, 403
+        try:
+            updated_place = facade.update_place(place_id, update_data)
+            return updated_place, 200
+        except ValueError as e:
+            api.abort(400, str(e))
