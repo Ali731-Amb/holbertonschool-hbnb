@@ -22,29 +22,25 @@ class User(BaseModel):
     is_admin = db.Column(db.Boolean, default=False)
     pet = db.Column(db.String(20))  # nom de l'Enum
 
-    # Init pour validations et compatibilité BaseModel
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)  # id, created_at, updated_at
-
-        # Attributs User
+        super().__init__(**kwargs)
         self.first_name = kwargs.get('first_name')
         self.last_name = kwargs.get('last_name')
         self.email = kwargs.get('email')
         self.password = kwargs.get('password')
         self.is_admin = kwargs.get('is_admin', False)
 
-        # Validation
         if not self.first_name or len(self.first_name.strip()) == 0:
             raise ValueError("First name can't be empty")
         if not self.last_name or len(self.last_name.strip()) == 0:
             raise ValueError("Last name can't be empty")
 
-        # Gestion du pet
         pet_value = kwargs.get('pet')
         self._pet = None
         if pet_value:
-            self.pet = pet_value  #*setter
-# ----------------First name ----------------
+            self.pets = pet_value
+
+    # ----------------First name ----------------
     @property
     def first_name(self):
         return self._first_name
@@ -55,7 +51,7 @@ class User(BaseModel):
             raise ValueError("First name must be under 50 characters")
         self._first_name = value
 
-# ---------------Last Name -----------------
+    # ---------------Last Name -----------------
     @property
     def last_name(self):
         return self._last_name
@@ -66,8 +62,7 @@ class User(BaseModel):
             raise ValueError("Last name must be under 50 characters")
         self._last_name = value
 
-# --------------------- Email -----------------
-
+    # --------------------- Email -----------------
     @property
     def email(self):
         return self._email
@@ -87,7 +82,7 @@ class User(BaseModel):
             raise ValueError("Email invalide")
         return email
 
-# ------------------- Password ----------------------------
+    # ------------------- Password ----------------------------
     @property
     def password(self):
         raise AttributeError("Password is not a readable attribute")
@@ -123,9 +118,7 @@ class User(BaseModel):
         """Hashes the password before storing it."""
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-
-# ------------------------ Admin ------------------------------
-
+    # ------------------------ Admin ------------------------------
     @property
     def is_admin(self):
         return self._is_admin
@@ -136,7 +129,7 @@ class User(BaseModel):
             raise ValueError("is_admin must be a boolean")
         self._is_admin = value
 
-# -----------------Pets-------------------------
+    # -----------------Pets-------------------------
     @property
     def pets(self):
         return self._pets
@@ -154,9 +147,9 @@ class User(BaseModel):
                 raise ValueError(f"'{value}' is not valid animal.")
         else:
             raise ValueError("Format animal invalide.")
-        self.__dict__['pet'] = self._pet.name if self._pet else None
+        self.__dict__['pet'] = self._pets.name if self._pets else None
 
-# --------------------Dictionnaire------------------------
+    # --------------------Dictionnaire------------------------
     def to_dict(self):
         return {
             "id": self.id,
