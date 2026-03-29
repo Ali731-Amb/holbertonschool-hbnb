@@ -22,6 +22,9 @@ class User(BaseModel):
     is_admin = db.Column(db.Boolean, default=False)
     pet = db.Column(db.String(20))  # nom de l'Enum
 
+    places = db.relationship('Place', backref='owner', cascade='all, delete-orphan')
+    reviews = db.relationship('Review', backref='author', cascade='all, delete-orphan')
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.first_name = kwargs.get('first_name')
