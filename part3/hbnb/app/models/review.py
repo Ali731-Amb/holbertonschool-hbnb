@@ -10,6 +10,9 @@ class Review(BaseModel):
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
 
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.content = kwargs.get('content')
