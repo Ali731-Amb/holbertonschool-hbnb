@@ -6,14 +6,20 @@ class Place(BaseModel):
     __tablename__ = 'places'
 
     title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
+    description = db.Column(db.String(500))
     price = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float)
     latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.title = kwargs.get('title')
+        self.description = kwargs.get('description')
+        self.price = kwargs.get('price')
+        self.latitude = kwargs.get('latitude')
+        self.longitude = kwargs.get('longitude')
+        self.user_id = kwargs.get('user_id')
 
 
 #----------------- Title -----------------
