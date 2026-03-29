@@ -1,28 +1,49 @@
 from .base_model import BaseModel
+from app import db
 from enum import Enum
 from app import bcrypt
+import json
 
-
+# ---------------- Enum Pets ----------------
 class PetType(Enum):
     DOG = 1
     CAT = 2
     OTHERS = 3
 
-
+# ---------------- User ----------------
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, password, is_admin=False, pets=None, **kwargs):
-        super().__init__(**kwargs)
-        if not first_name or len(first_name.strip()) == 0:
-            raise ValueError("First name can't be empty")
-        if not last_name or len(last_name.strip()) == 0:
-            raise ValueError("Last name can't be empty")
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.is_admin = is_admin
-        self.password = password
-        self.pets = pets
+    __tablename__ = 'users'
 
+    # Colonnes SQLAlchemy
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    pet = db.Column(db.String(20))  # nom de l'Enum
+
+    # Init pour validations et compatibilité BaseModel
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)  # id, created_at, updated_at
+
+        # Attributs User
+        self.first_name = kwargs.get('first_name')
+        self.last_name = kwargs.get('last_name')
+        self.email = kwargs.get('email')
+        self.password = kwargs.get('password')
+        self.is_admin = kwargs.get('is_admin', False)
+
+        # Validation
+        if not self.first_name or len(self.first_name.strip()) == 0:
+            raise ValueError("First name can't be empty")
+        if not self.last_name or len(self.last_name.strip()) == 0:
+            raise ValueError("Last name can't be empty")
+
+        # Gestion du pet
+        pet_value = kwargs.get('pet')
+        self._pet = None
+        if pet_value:
+            self.pet = pet_value  #*setter
 # ----------------First name ----------------
     @property
     def first_name(self):
@@ -133,6 +154,7 @@ class User(BaseModel):
                 raise ValueError(f"'{value}' is not valid animal.")
         else:
             raise ValueError("Format animal invalide.")
+        self.__dict__['pet'] = self._pet.name if self._pet else None
 
 # --------------------Dictionnaire------------------------
     def to_dict(self):
