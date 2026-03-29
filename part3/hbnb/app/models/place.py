@@ -1,17 +1,19 @@
+from app import db
 from .base_model import BaseModel
 from .user import User
 
 class Place(BaseModel):
-    def __init__(self, title, price, latitude, longitude, owner, description=None, **kwargs):
+    __tablename__ = 'places'
+
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    price = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.title = title
-        self.description = description
-        self.price = price
-        self.latitude = latitude
-        self.longitude = longitude
-        self.owner = owner
-        self._reviews = []
-        self._amenities = []
 
 
 #----------------- Title -----------------
