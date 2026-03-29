@@ -3,13 +3,23 @@ from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.review import Review
 from app.models.place import Place
+from app.persistence.repository import SQLAlchemyRepository
+
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        try:
+            #SQLAlchemy en priorité
+            self.user_repo = SQLAlchemyRepository(User)
+            self.place_repo = SQLAlchemyRepository(Place)
+            self.review_repo = SQLAlchemyRepository(Review)
+            self.amenity_repo = SQLAlchemyRepository(Amenity)
+        except Exception:
+            #fallback sur InMemory
+            self.user_repo = InMemoryRepository(User)
+            self.place_repo = InMemoryRepository(Place)
+            self.review_repo = InMemoryRepository(Review)
+            self.amenity_repo = InMemoryRepository(Amenity)
 
 #---------------------------- User ----------------------
 
