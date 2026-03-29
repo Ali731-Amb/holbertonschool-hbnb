@@ -1,12 +1,15 @@
+from app import db
 import uuid
 from datetime import datetime
 
-class BaseModel:
+class BaseModel(db.Model):
+    __abstract__ = True
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     def __init__(self, **kwargs):
-        self.id = kwargs.get('id', str(uuid.uuid4()))
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        super().__init__(**kwargs)
 
     def save(self):
         """Update the updated_at timestamp whenever the object is modified"""
