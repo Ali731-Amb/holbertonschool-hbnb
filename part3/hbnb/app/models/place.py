@@ -12,6 +12,19 @@ class Place(BaseModel):
     longitude = db.Column(db.Float)
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
+    # Clé étrangère → un place appartient à un user
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+# Relations
+    reviews = db.relationship('Review', backref='place', cascade='all, delete-orphan')
+    amenities = db.relationship('Amenity', secondary=place_amenity, backref='places')
+
+    place_amenity = db.Table(
+    'place_amenity',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.title = kwargs.get('title')
