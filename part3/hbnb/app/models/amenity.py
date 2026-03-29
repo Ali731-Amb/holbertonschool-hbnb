@@ -5,10 +5,13 @@ from .base_model import BaseModel
 class Amenity(BaseModel):
     __tablename__ = 'amenities'
 
-    name = db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.name = kwargs.get('name')
+        self.description = kwargs.get('description')
 
         @property
         def name(self):
