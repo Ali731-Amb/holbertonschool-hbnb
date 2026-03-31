@@ -155,7 +155,7 @@ class AdminPlaceModify(Resource):
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Unauthorized action')
-    @api.abort(500, 'Internal server error')
+    @api.response(500, 'Internal server error')
     def put(self, place_id):
         claims = get_jwt()
         is_admin = claims.get('is_admin')
