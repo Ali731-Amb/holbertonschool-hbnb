@@ -1,26 +1,26 @@
--- Supprime les tables si elles existent déjà (pour pouvoir relancer proprement)
-DROP TABLE IF EXISTS Place_Amenity;
-DROP TABLE IF EXISTS Review;
-DROP TABLE IF EXISTS Place;
-DROP TABLE IF EXISTS Amenity;
-DROP TABLE IF EXISTS User;
+-- Supprime les tables dans le bon ordre (enfants avant parents)
+DROP TABLE IF EXISTS place_amenity;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS places;
+DROP TABLE IF EXISTS amenities;
+DROP TABLE IF EXISTS users;
 
 -- =====================
--- TABLE : User
+-- TABLE : users
 -- =====================
 CREATE TABLE users (
-    id           CHAR(36)     PRIMARY KEY,
-    first_name   VARCHAR(50)  NOT NULL,
-    last_name    VARCHAR(50)  NOT NULL,
-    email        VARCHAR(120) UNIQUE NOT NULL,
+    id            CHAR(36)     PRIMARY KEY,
+    first_name    VARCHAR(50)  NOT NULL,
+    last_name     VARCHAR(50)  NOT NULL,
+    email         VARCHAR(120) UNIQUE NOT NULL,
     password_hash VARCHAR(128) NOT NULL,
-    is_admin     BOOLEAN      DEFAULT FALSE
+    is_admin      BOOLEAN      DEFAULT FALSE
 );
 
 -- =====================
--- TABLE : Place
+-- TABLE : places
 -- =====================
-CREATE TABLE Place (
+CREATE TABLE places (
     id          CHAR(36)       PRIMARY KEY,
     title       VARCHAR(255),
     description TEXT,
@@ -28,38 +28,38 @@ CREATE TABLE Place (
     latitude    FLOAT,
     longitude   FLOAT,
     owner_id    CHAR(36)       NOT NULL,
-    FOREIGN KEY (owner_id) REFERENCES User(id)
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- =====================
--- TABLE : Review
+-- TABLE : reviews
 -- =====================
-CREATE TABLE Review (
+CREATE TABLE reviews (
     id       CHAR(36) PRIMARY KEY,
     text     TEXT,
     rating   INT CHECK (rating >= 1 AND rating <= 5),
     user_id  CHAR(36) NOT NULL,
     place_id CHAR(36) NOT NULL,
-    FOREIGN KEY (user_id)  REFERENCES User(id),
-    FOREIGN KEY (place_id) REFERENCES Place(id),
-    UNIQUE (user_id, place_id)   -- un seul avis par utilisateur par lieu
+    FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+    FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
+    UNIQUE (user_id, place_id)
 );
 
 -- =====================
--- TABLE : Amenity
+-- TABLE : amenities
 -- =====================
-CREATE TABLE Amenity (
+CREATE TABLE amenities (
     id   CHAR(36)     PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- =====================
--- TABLE : Place_Amenity (relation Many-to-Many)
+-- TABLE : place_amenity
 -- =====================
-CREATE TABLE Place_Amenity (
+CREATE TABLE place_amenity (
     place_id   CHAR(36) NOT NULL,
     amenity_id CHAR(36) NOT NULL,
-    PRIMARY KEY (place_id, amenity_id),          -- clé primaire composite
-    FOREIGN KEY (place_id)   REFERENCES Place(id),
-    FOREIGN KEY (amenity_id) REFERENCES Amenity(id)
+    PRIMARY KEY (place_id, amenity_id),
+    FOREIGN KEY (place_id)   REFERENCES places(id)    ON DELETE CASCADE,
+    FOREIGN KEY (amenity_id) REFERENCES amenities(id) ON DELETE CASCADE
 );
