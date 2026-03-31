@@ -81,8 +81,10 @@ class User(BaseModel):
 
     @password.setter
     def password(self, value):
+        if value is None:
+            return
         validated_password = User.validate_password(value)
-        self._password = bcrypt.generate_password_hash(
+        self.password_hash = bcrypt.generate_password_hash(
             validated_password).decode('utf-8')
 
     @staticmethod
@@ -104,7 +106,7 @@ class User(BaseModel):
 
     def verify_password(self, password_to_check):
         """Check password"""
-        return bcrypt.check_password_hash(self._password, password_to_check)
+        return bcrypt.check_password_hash(self.password_hash, password_to_check)
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
