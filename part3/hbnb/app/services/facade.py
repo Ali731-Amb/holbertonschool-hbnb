@@ -71,7 +71,7 @@ class HBnBFacade:
             price=place_data.get('price'),
             latitude=place_data.get('latitude'),
             longitude=place_data.get('longitude'),
-            owner=owner,
+            owner_id=owner.id,
             description=place_data.get('description'),
                             )
             for amenity in amenities:
@@ -109,6 +109,10 @@ class HBnBFacade:
                 place.add_amenity(amenity)
         self.place_repo.update(place)
         return place
+    
+    def delete_place(self, place_id):
+        self.get_place(place_id)  # lève ValueError si introuvable
+        return self.place_repo.delete(place_id)
 
 
 #---------------------Amenity-------------------------
@@ -145,7 +149,7 @@ class HBnBFacade:
         new_review = Review(
             text=review_data['text'],
             rating=review_data['rating'],
-            user=user,
+            user_id=user.id,
             place=place
         )
         place.add_review(new_review)
@@ -173,6 +177,14 @@ class HBnBFacade:
                 setattr(review, key, review_data[key])
         self.review_repo.update(review)
         return review
+    
+    def get_user_review_for_place(self, user_id, place_id):
+        self.get_user(user_id)
+        place_reviews = self.get_reviews_by_place(place_id)
+        for review in place_reviews:
+            if review.user_id == user_id:
+                return review
+        return None
 
     def delete_review(self, review_id):
         self.get_review(review_id)
