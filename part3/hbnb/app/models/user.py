@@ -3,6 +3,7 @@ from app import db
 from enum import Enum
 from app import bcrypt
 import json
+from sqlalchemy.orm import validates
 
 # ---------------- Enum Pets ----------------
 class PetType(Enum):
@@ -18,7 +19,7 @@ class User(BaseModel):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
-    password = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     pet = db.Column(db.String(20))  # nom de l'Enum
 
@@ -33,46 +34,34 @@ class User(BaseModel):
         self.password = kwargs.get('password')
         self.is_admin = kwargs.get('is_admin', False)
 
-        if not self.first_name or len(self.first_name.strip()) == 0:
-            raise ValueError("First name can't be empty")
-        if not self.last_name or len(self.last_name.strip()) == 0:
-            raise ValueError("Last name can't be empty")
-
         pet_value = kwargs.get('pet')
         self._pet = None
         if pet_value:
             self.pets = pet_value
 
     # ----------------First name ----------------
-    @property
-    def first_name(self):
-        return self._first_name
 
-    @first_name.setter
-    def first_name(self, value):
+    @validates('first_name')
+    def validate_first_name(self, key, value):
+        if not value or len(value.strip()) == 0:
+            raise ValueError("First name cannot be empty")
         if len(value) > 50:
             raise ValueError("First name must be under 50 characters")
-        self._first_name = value
+        return value
 
     # ---------------Last Name -----------------
-    @property
-    def last_name(self):
-        return self._last_name
-
-    @last_name.setter
-    def last_name(self, value):
+    @validates('last_name')
+    def validate_last_name(self, key, value):
+        if not value or len(value.strip()) == 0:
+            raise ValueError("Last name cannot be empty")
         if len(value) > 50:
             raise ValueError("Last name must be under 50 characters")
-        self._last_name = value
+        return value
 
     # --------------------- Email -----------------
-    @property
-    def email(self):
-        return self._email
-
-    @email.setter
-    def email(self, value):
-        self._email = User.validate_email(value)
+    @validates('email')
+    def email(self, key, value):
+        value = User.validate_email(value)
 
     @staticmethod
     def validate_email(email):
@@ -99,7 +88,7 @@ class User(BaseModel):
     @staticmethod
     def validate_password(password):
         if len(password) < 8:
-            raise ValueError("Password invalide")
+            raise ValueError("Password must be at least 8 characters")
         has_digit = False
         has_upper = False
         for char in password:
@@ -122,15 +111,11 @@ class User(BaseModel):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     # ------------------------ Admin ------------------------------
-    @property
-    def is_admin(self):
-        return self._is_admin
-
-    @is_admin.setter
-    def is_admin(self, value):
+    @validates('is_admin')
+    def is_admin(self, key, value):
         if not isinstance(value, bool):
             raise ValueError("is_admin must be a boolean")
-        self._is_admin = value
+        return value
 
     # -----------------Pets-------------------------
     @property
