@@ -107,4 +107,4 @@ class ReviewResource(Resource):
         sucess = facade.delete_review(review_id)
         if not sucess: 
             api.abort(500, 'An error occured during deltion')
-        return {'message' : 'Review deleted successfully'}, 204
+        return {'message' : 'Review deleted successfully'}, 200
