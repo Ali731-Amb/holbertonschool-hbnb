@@ -130,22 +130,22 @@ class PlaceReviewList(Resource):
             api.abort(404, str(e))
 
 
-@api.response(204, 'Place successfully deleted')
-@api.response(404, 'Place not found')
-@api.response(403, 'Unauthorized action')
-@jwt_required()
-def delete(self, place_id):
-    current_user = get_jwt_identity()
-    place = facade.get_place(place_id)
-    is_admin = current_user.get('is_admin', False)
-    user_id = current_user.get('id')
-    if not is_admin and place.owner_id != user_id:
-        return {'error': 'Unauthorized action'}, 403
-    try:
-        facade.delete_place(place_id)
-    except ValueError as e:
-        return api.abort(404, str(e))
-    return '', 204
+    @api.response(204, 'Place successfully deleted')
+    @api.response(404, 'Place not found')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
+    def delete(self, place_id):
+        current_user = get_jwt_identity()
+        place = facade.get_place(place_id)
+        is_admin = current_user.get('is_admin', False)
+        user_id = current_user.get('id')
+        if not is_admin and place.owner_id != user_id:
+            return {'error': 'Unauthorized action'}, 403
+        try:
+            facade.delete_place(place_id)
+        except ValueError as e:
+            return api.abort(404, str(e))
+        return '', 204
     
 #------------------------ Admin --------------------------
 @api.route('/places/<place_id>')
