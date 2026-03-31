@@ -11,7 +11,6 @@ class Place(BaseModel):
     price = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     # Clé étrangère → un place appartient à un user
     owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
