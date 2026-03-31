@@ -14,7 +14,7 @@ CREATE TABLE users (
     last_name     VARCHAR(50)  NOT NULL,
     email         VARCHAR(120) UNIQUE NOT NULL,
     password_hash VARCHAR(128) NOT NULL,
-    is_admin      BOOLEAN      DEFAULT FALSE
+    is_admin      BOOLEAN      DEFAULT FALSE,
     `pet`           VARCHAR(20)
 );
 
