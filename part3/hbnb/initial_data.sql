@@ -5,14 +5,14 @@ DELETE FROM Place_Amenity;
 DELETE FROM Review;
 DELETE FROM Place;
 DELETE FROM Amenity;
-DELETE FROM User;
-INSERT INTO User (id, first_name, last_name, email, password, is_admin)
+DELETE FROM users;
+INSERT INTO users (id, first_name, last_name, email, password_hash, is_admin)
 VALUES (
     '36c9050e-ddd3-4c3b-9731-9f487208bbc1',
     'Admin',
     'HBnB',
     'admin@hbnb.io',
-    '$2b$12$8hWNmEoxVIy3V6LhqQvp7.nqx5puU/ekdqd0Xvp3GZiA69HAywMsO',
+    '$2b$12$TKJDoP1SU0XvHXtQX.UDGeFoDYxNcy8ibONHnA6Rm1X4OPv2EzZj6',
     TRUE
 );
 
