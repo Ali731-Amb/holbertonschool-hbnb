@@ -15,12 +15,11 @@ class HBnBFacade:
             self.review_repo = SQLAlchemyRepository(Review)
             self.amenity_repo = SQLAlchemyRepository(Amenity)
         except Exception:
-            #fallback sur InMemory
-            self.user_repo = InMemoryRepository(User)
-            self.place_repo = InMemoryRepository(Place)
-            self.review_repo = InMemoryRepository(Review)
-            self.amenity_repo = InMemoryRepository(Amenity)
-
+            # fallback sur InMemory
+            self.user_repo = InMemoryRepository()
+            self.place_repo = InMemoryRepository()
+            self.review_repo = InMemoryRepository()
+            self.amenity_repo = InMemoryRepository()
 #---------------------------- User ----------------------
 
     def create_user(self, user_data):
