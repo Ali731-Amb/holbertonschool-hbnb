@@ -3,6 +3,11 @@ from .base_model import BaseModel
 from .user import User
 from sqlalchemy.orm import validates
 
+place_amenity = db.Table(
+    'place_amenity',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
 class Place(BaseModel):
     __tablename__ = 'places'
 
@@ -15,11 +20,6 @@ class Place(BaseModel):
     # Clé étrangère → un place appartient à un user
     owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
-    place_amenity = db.Table(
-    'place_amenity',
-    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
-    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
-)
 # Relations
     reviews = db.relationship('Review', backref='place', cascade='all, delete-orphan')
     amenities = db.relationship('Amenity', secondary=place_amenity, backref='places')
