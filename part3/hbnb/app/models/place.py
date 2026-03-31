@@ -1,6 +1,7 @@
 from app import db
 from .base_model import BaseModel
 from .user import User
+from sqlalchemy.orm import validates
 
 class Place(BaseModel):
     __tablename__ = 'places'
@@ -35,36 +36,24 @@ class Place(BaseModel):
 
 
 #----------------- Title -----------------
-    @property
-    def title(self):
-        return self._title
-    
-    @title.setter
-    def title(self, value):
+    @validates('title')
+    def title(self, key, value):
         if not isinstance(value, str):
             raise ValueError("Title must be a string of characters.")
         if len(value) > 100:
             raise ValueError("Title must be under 100 characters")
-        self._title = value
+        return value
 
 #-----------------Description ------------
-    @property
-    def description(self):
-        return self._description
-    
-    @description.setter
-    def description(self, value):
+    @validates('description')
+    def description(self, key, value):
         if value is not None and not isinstance(value, str):
             raise ValueError("Description must be a string or None")
         self._description = value
 
 #------------------Price -----------------
-    @property
-    def price(self):
-        return self._price
-    
-    @price.setter
-    def price(self, value):
+    @validates('price')
+    def price(self, key, value):
         if not isinstance(value, (int, float)):
             raise ValueError("The price must be an integer or a decimal number")
         if value <= 0:
@@ -72,41 +61,29 @@ class Place(BaseModel):
         self._price = value
 
 #-----------------Latitude ---------------
-    @property
-    def latitude(self):
-        return self._latitude 
-    
-    @latitude.setter
-    def latitude(self, value):
+    @validates('latitude')
+    def latitude(self, key, value):
         if not isinstance(value, (int, float)):
             raise ValueError("Latitude must be an integer or a decimal number")
         if value < -90.0  or value > 90.0 :
             raise ValueError("The latitude must be between -90.0 and 90.0")
-        self._latitude = value
+        return value
 
 #----------------Longitude----------------
-    @property
-    def longitude(self):
-        return self._longitude 
-    
-    @longitude.setter 
+    @validates('longitude')
     def longitude(self, value):
         if not isinstance(value, (float, int)):
             raise ValueError("Longitude must be an integer or a decimal number")
         if value < -180.0 or value > 180.0:
             raise ValueError("The longitude must be between -180.0 and 180")
-        self._longitude = value
+        return value
 
 #----------------Owner--------------------
-    @property
-    def owner(self):
-        return self._owner
-    
-    @owner.setter
+    @validates('owner')
     def owner(self, value):
         if not isinstance(value, User):
             raise TypeError("The owner must belong to the user class")
-        self._owner = value
+        return value
 
 #----------------Review------------------
     def add_review(self, review):
@@ -118,16 +95,12 @@ class Place(BaseModel):
 
 
 #----------------Amenity------------------
-    @property
-    def amenities(self):
-        return self._amenities 
-    
-    @amenities.setter
-    def amenities(self, value):
+    @validates('amenity')
+    def amenities(self, key, value):
         """Add an amenity to the place."""
         if not isinstance(value, list):
             raise ValueError("Amenities must be a list")
-        self._amenities = value
+        return value
     
     def add_amenity(self, amenity):
         """Add an amenity to the place if it's not already present."""
