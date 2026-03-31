@@ -60,7 +60,7 @@ class User(BaseModel):
 
     # --------------------- Email -----------------
     @validates('email')
-    def email(self, key, value):
+    def validate_email_field(self, key, value):
         value = User.validate_email(value)
         return value
 
