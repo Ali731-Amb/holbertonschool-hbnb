@@ -62,6 +62,7 @@ class User(BaseModel):
     @validates('email')
     def email(self, key, value):
         value = User.validate_email(value)
+        return value
 
     @staticmethod
     def validate_email(email):
