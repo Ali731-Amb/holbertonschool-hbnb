@@ -1,7 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask import request, jsonify, abort
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('users', description='User operations')
 
@@ -34,7 +34,7 @@ class UserList(Resource):
         'pets': u.pets.name if u.pets else None
                 } for u in users], 200
     
-    @get_jwt_identity()
+    @jwt_required()
     @api.expect(user_model, validate=True)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
@@ -110,8 +110,8 @@ class AdminUserCreate(Resource):
 
     @jwt_required()
     def post(self):
-        current_user = get_jwt_identity()
-        if not current_user.get('is_admin'):
+        claims = get_jwt()
+        if not claims.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
         user_data = api.payload
         email = user_data.get('email')
@@ -131,8 +131,8 @@ class AdminUserModify(Resource):
     @api.response(403, 'Unauthorized action')
     @api.response(500, "An unexpected error occurred during update")
     def put(self, user_id):
-        current_user = get_jwt_identity()
-        if not current_user.get('is_admin'):
+        claims = get_jwt()
+        if not claims.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
         data = api.payload
         email = data.get('email')
