@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('places', description='Place operations')
 
@@ -155,16 +155,21 @@ class AdminPlaceModify(Resource):
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Unauthorized action')
+    @api.abort(500, 'Internal server error')
     def put(self, place_id):
-        current_user = get_jwt_identity()
-        is_admin = current_user.get('is_admin', False)
-        user_id = current_user.get('id')
+        claims = get_jwt()
+        is_admin = claims.get('is_admin')
+        user_id = get_jwt_identity()
         place = facade.get_place(place_id)
-        update_data = api.payload
+        if not place:
+            return {'error': 'Place not found'}, 404
         if not is_admin and place.owner_id != user_id:
             return {'error': 'Unauthorized action'}, 403
+        update_data = api.payload
         try:
             updated_place = facade.update_place(place_id, update_data)
             return updated_place, 200
         except ValueError as e:
             api.abort(400, str(e))
+        except Exception:
+            api.abort(500, 'Internal server error')
