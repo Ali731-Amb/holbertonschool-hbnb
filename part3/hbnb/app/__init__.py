@@ -18,8 +18,8 @@ from app.api.v1.auth import api as auth_ns
 
 def create_app(config_class=config.DevelopmentConfig):
         app = Flask(__name__)
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///hbnb.db')
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+        app.config.from_object(config_class)
 
         # Configuration de l'API (Swagger)
         api = Api(app, 
