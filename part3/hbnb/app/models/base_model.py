@@ -11,6 +11,7 @@ class BaseModel(db.Model):
 
     def __init__(self, **kwargs):
         # Init minimal pour permettre héritage et compatibilité ORM
+        super().__init__(**kwargs)
         self.id = kwargs.get('id', str(uuid.uuid4()))
         self.created_at = kwargs.get('created_at', datetime.utcnow())
         self.updated_at = kwargs.get('updated_at', datetime.utcnow())
