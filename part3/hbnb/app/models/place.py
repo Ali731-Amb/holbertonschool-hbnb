@@ -70,7 +70,7 @@ class Place(BaseModel):
 
 #----------------Longitude----------------
     @validates('longitude')
-    def longitude(self, value):
+    def validate_longitude(self, key, value):
         if not isinstance(value, (float, int)):
             raise ValueError("Longitude must be an integer or a decimal number")
         if value < -180.0 or value > 180.0:
@@ -79,7 +79,7 @@ class Place(BaseModel):
 
 #----------------Owner--------------------
     @validates('owner')
-    def validate_owner(self, value):
+    def validate_owner(self, key, value):
         if not isinstance(value, User):
             raise TypeError("The owner must belong to the user class")
         return value
