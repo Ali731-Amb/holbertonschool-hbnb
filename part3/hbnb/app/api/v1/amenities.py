@@ -14,7 +14,6 @@ amenity_model = api.model('Amenity', {
 class AmenityList(Resource):
     @jwt_required()
     @api.expect(amenity_model, validate=True)
-    @api.marshal_with(amenity_model, code=201)
     @api.response(201, 'Amenity successfully created')
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Unauthorized action')
