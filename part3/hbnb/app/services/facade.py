@@ -141,7 +141,7 @@ class HBnBFacade:
             text=review_data['text'],
             rating=review_data['rating'],
             user_id=user.id,
-            place=place
+            place_id=place.id
         )
         place.add_review(new_review)
         self.review_repo.add(new_review)
