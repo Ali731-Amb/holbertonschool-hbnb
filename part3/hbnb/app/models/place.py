@@ -36,7 +36,7 @@ class Place(BaseModel):
 
 #----------------- Title -----------------
     @validates('title')
-    def title(self, key, value):
+    def validate_title(self, key, value):
         if not isinstance(value, str):
             raise ValueError("Title must be a string of characters.")
         if len(value) > 100:
@@ -45,14 +45,14 @@ class Place(BaseModel):
 
 #-----------------Description ------------
     @validates('description')
-    def description(self, key, value):
+    def validate_description(self, key, value):
         if value is not None and not isinstance(value, str):
             raise ValueError("Description must be a string or None")
         return value
 
 #------------------Price -----------------
     @validates('price')
-    def price(self, key, value):
+    def validate_price(self, key, value):
         if not isinstance(value, (int, float)):
             raise ValueError("The price must be an integer or a decimal number")
         if value <= 0:
@@ -61,7 +61,7 @@ class Place(BaseModel):
 
 #-----------------Latitude ---------------
     @validates('latitude')
-    def latitude(self, key, value):
+    def validate_latitude(self, key, value):
         if not isinstance(value, (int, float)):
             raise ValueError("Latitude must be an integer or a decimal number")
         if value < -90.0  or value > 90.0 :
@@ -79,7 +79,7 @@ class Place(BaseModel):
 
 #----------------Owner--------------------
     @validates('owner')
-    def owner(self, value):
+    def validate_owner(self, value):
         if not isinstance(value, User):
             raise TypeError("The owner must belong to the user class")
         return value
@@ -95,7 +95,7 @@ class Place(BaseModel):
 
 #----------------Amenity------------------
     @validates('amenity')
-    def amenities(self, key, value):
+    def validate_amenities(self, key, value):
         """Add an amenity to the place."""
         if not isinstance(value, list):
             raise ValueError("Amenities must be a list")
@@ -120,7 +120,7 @@ class Place(BaseModel):
             "price": self.price,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "owner_id": self.owner.id if self.owner else None,
+            "owner_id": self.owner.id,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             }
