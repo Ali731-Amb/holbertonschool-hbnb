@@ -76,7 +76,6 @@ class PlaceList(Resource):
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
-    @jwt_required()
     @api.marshal_with(place_model)
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
