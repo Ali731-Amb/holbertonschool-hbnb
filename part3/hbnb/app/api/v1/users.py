@@ -14,10 +14,9 @@ user_model = api.model('User', {
     'pets': fields.String(description='Pet of the user', enum=['DOG', 'CAT', 'OTHERS'])
     })
 
-user_update_model = api.model('User', {
-    'id': fields.String(readOnly=True, description='The unique identifier of the user'),
-    'first_name': fields.String(required=True, min_lenght=1, description='First name of the user'),
-    'last_name': fields.String(required=True, min_lenght=1, description='Last name of the user'),
+user_update_model = api.model('UserUpdate', {
+    'first_name': fields.String(required=False, description='First name of the user'),
+    'last_name': fields.String(required=False, description='Last name of the user'),
     })
 
 @api.route('/')
@@ -65,7 +64,7 @@ class UserResource(Resource):
         return user.to_dict(), 200
     
     @jwt_required()
-    @api.expect(user_update_model, validate=True)
+    @api.expect(user_update_model, validate=False)
     @api.response(200, 'User successfully updated')
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data')
@@ -87,9 +86,9 @@ class UserResource(Resource):
         try:
             updated_data = facade.update_user(user_id, update_data)
             return {
-                'message': 'User update successfully',
-                'user': updated_data
-            }, 200
+                    'message': 'User update successfully',
+                    'user': updated_data.to_dict()
+                    }, 200
         except ValueError as e:
             api.abort(400, str(e))
         except Exception as e:
