@@ -94,14 +94,14 @@ class ReviewResource(Resource):
     @api.response(403, 'Unautorized action')
     @api.response(500, 'An error occured during deltion')
     def delete(self, review_id):
-        """Delete a review"""
         current_user_id = get_jwt_identity()
         review = facade.get_review(review_id)
         if not review:
             api.abort(404, 'Review not found')
         if str(review.user_id) != str(current_user_id):
             api.abort(403, 'You can only delete your own review')
-        sucess = facade.delete_review(review_id)
-        if not sucess: 
-            api.abort(500, 'An error occured during deltion')
-        return {'message' : 'Review deleted successfully'}, 200
+        try:
+            facade.delete_review(review_id)
+            return {'message': 'Review deleted successfully'}, 200
+        except Exception as e:
+            api.abort(500, f'An error occured during deletion: {str(e)}')
