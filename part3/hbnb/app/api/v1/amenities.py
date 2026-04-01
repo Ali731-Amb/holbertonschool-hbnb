@@ -26,7 +26,7 @@ class AmenityList(Resource):
         amenity_data = api.payload
         try:
             new_amenity = facade.create_amenity(amenity_data)
-            return new_amenity, 201
+            return new_amenity.to_dict(), 201
         except ValueError as e:
             return {'message': str(e)}, 400
 
