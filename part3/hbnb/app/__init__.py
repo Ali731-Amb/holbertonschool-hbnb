@@ -38,7 +38,7 @@ def create_app(config_class=config.DevelopmentConfig):
         jwt.init_app(app)
         bcrypt.init_app(app)
 
-        with app.app_context():
-                db.create_all()
+        #with app.app_context():
+                #db.create_all()
 
         return app
