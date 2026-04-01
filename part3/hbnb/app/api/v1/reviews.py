@@ -84,10 +84,7 @@ class ReviewResource(Resource):
             updated_review = facade.update_review(review_id, update_data)
             if not updated_review: 
                 api.abort(400, 'Review update failed')
-            return {
-                'message' : 'Review updated successfully',
-                'review' : updated_review
-            }, 200
+            return updated_review.to_dict(), 200
         except ValueError as e: 
             api.abort(400, str(e))
 
