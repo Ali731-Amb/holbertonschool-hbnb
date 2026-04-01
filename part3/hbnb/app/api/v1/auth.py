@@ -16,12 +16,18 @@ class Login(Resource):
     def post(self):
         """Authenticate user and return a JWT token"""
         credentials = api.payload
+        print("=== DEBUG LOGIN ===")
+        print("Email reçu:", credentials['email'])
         user = facade.get_user_by_email(credentials['email'])
+        print("User trouvé:", user)
+        if user:
+            print("Hash:", user.password_hash)
+            print("Verify:", user.verify_password(credentials['password']))
         if not user or not user.verify_password(credentials['password']):
             return {'error': 'Invalid credentials'}, 401
         access_token = create_access_token(
-        identity=str(user.id),
-        additional_claims={"is_admin": user.is_admin}
+            identity=str(user.id),
+            additional_claims={"is_admin": user.is_admin}
         )
         return {'access_token': access_token}, 200
 

@@ -14,7 +14,7 @@ VALUES (
     'Admin',
     'HBnB',
     'admin@hbnb.io',
-    '$2b$12$NVkYW0OzyiII3/d8k77Z2.yYogb6NGQ9nQ.ueTEnVrEQAU4fvwupu',
+    '$2b$12$XlWoXq1wWop/AhgmLdRzEeuy8fALH2avP9qtK7iR197JUkTw1KYay',
     TRUE
 );
 

@@ -35,7 +35,7 @@ class User(BaseModel):
         self.is_admin = kwargs.get('is_admin', False)
 
         pet_value = kwargs.get('pet')
-        self._pet = None
+        self._pets = None
         if pet_value:
             self.pets = pet_value
 
@@ -114,7 +114,7 @@ class User(BaseModel):
 
     # ------------------------ Admin ------------------------------
     @validates('is_admin')
-    def is_admin(self, key, value):
+    def validate_is_admin(self, key, value):
         if not isinstance(value, bool):
             raise ValueError("is_admin must be a boolean")
         return value
@@ -122,7 +122,7 @@ class User(BaseModel):
     # -----------------Pets-------------------------
     @property
     def pets(self):
-        return self._pets
+        return getattr(self, '_pets', None)
 
     @pets.setter
     def pets(self, value):
