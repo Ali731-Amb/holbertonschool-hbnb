@@ -143,7 +143,6 @@ class HBnBFacade:
             user_id=user.id,
             place_id=place.id
         )
-        place.add_review(new_review)
         self.review_repo.add(new_review)
         return new_review
 
