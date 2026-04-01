@@ -169,12 +169,12 @@ class HBnBFacade:
         return review
     
     def get_user_review_for_place(self, user_id, place_id):
-        self.get_user(user_id)
-        place_reviews = self.get_reviews_by_place(place_id)
-        for review in place_reviews:
-            if review.user_id == user_id:
-                return review
-        return None
+        from app.models.review import Review
+        from app import db
+        result = db.session.query(Review).filter_by(
+            user_id=user_id, place_id=place_id
+        ).first()
+        return result
 
     def delete_review(self, review_id):
         self.get_review(review_id)
