@@ -88,6 +88,7 @@ class PlaceResource(Resource):
         except ValueError as e:
             api.abort(404, str(e))
 
+    @jwt_required()
     @api.marshal_with(place_model)
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
