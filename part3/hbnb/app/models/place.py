@@ -31,7 +31,7 @@ class Place(BaseModel):
         self.price = kwargs.get('price')
         self.latitude = kwargs.get('latitude')
         self.longitude = kwargs.get('longitude')
-        self.user_id = kwargs.get('user_id')
+        self.owner_id = kwargs.get('owner_id')
 
 
 #----------------- Title -----------------
@@ -48,7 +48,7 @@ class Place(BaseModel):
     def description(self, key, value):
         if value is not None and not isinstance(value, str):
             raise ValueError("Description must be a string or None")
-        self._description = value
+        return value
 
 #------------------Price -----------------
     @validates('price')
@@ -57,7 +57,7 @@ class Place(BaseModel):
             raise ValueError("The price must be an integer or a decimal number")
         if value <= 0:
             raise ValueError("The price must be greater than 0.")
-        self._price = value
+        return value
 
 #-----------------Latitude ---------------
     @validates('latitude')
