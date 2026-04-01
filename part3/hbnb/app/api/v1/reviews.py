@@ -9,8 +9,8 @@ review_model = api.model('Review', {
     'id': fields.String(readOnly=True, description='Review ID'),
     'text': fields.String(required=True, description='Text of the review'),
     'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
-    'user_id': fields.String(attribute='user.id', description='User ID'),
-    'place_id': fields.String(attribute='place.id', description='Place ID')
+    'user_id': fields.String(description='User ID'),
+    'place_id': fields.String(description='Place ID')
 })
 
 @api.route('/')

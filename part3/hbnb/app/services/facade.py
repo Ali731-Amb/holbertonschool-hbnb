@@ -171,6 +171,7 @@ class HBnBFacade:
     def get_user_review_for_place(self, user_id, place_id):
         from app.models.review import Review
         from app import db
+        db.session.expire_all()
         result = db.session.query(Review).filter_by(
             user_id=user_id, place_id=place_id
         ).first()
