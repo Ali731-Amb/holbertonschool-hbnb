@@ -100,7 +100,7 @@ class PlaceResource(Resource):
         update_data = api.payload
         if not update_data:
             api.abort(400, 'No data provided')
-        place = facade.update_place(place_id)
+        place = facade.get_place(place_id)
         if not place:
             api.abort(404, "Place not found")
         if str(place.owner_id) != str(current_user_id):
