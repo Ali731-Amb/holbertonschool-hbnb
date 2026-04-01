@@ -61,7 +61,7 @@ class PlaceList(Resource):
         data['owner_id'] = current_user_id
         try:
             new_place = facade.create_place(data)
-            return new_place, 201
+            return new_place.to_dict(), 201
         except ValueError as e:
             api.abort(400, str(e))
         except Exception as e:
