@@ -38,9 +38,13 @@ class UserList(Resource):
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def post(self):
         """Register a new user"""
         user_data = api.payload
+        claims = get_jwt()
+        if not claims.get('is_admin'):
+            return {'error': 'Admin privileges required'}, 403
         if "password" not in user_data or not user_data["password"]:
             return {'erreur' : 'A password is required'}, 400
         existing_user = facade.get_user_by_email(user_data['email'])
