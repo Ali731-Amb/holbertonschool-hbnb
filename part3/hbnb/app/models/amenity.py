@@ -6,7 +6,6 @@ class Amenity(BaseModel):
     __tablename__ = 'amenities'
 
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(500))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
