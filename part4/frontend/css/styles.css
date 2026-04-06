@@ -1,27 +1,29 @@
-/* =============================================
-   HBNB - styles.css
-   Palette : orange #FF5A00, fond gris #f4f4f4
-   ============================================= */
+/* 
+  Base fournie par Holberton - NE PAS SUPPRIMER les styles existants
+  Ajouts marqués avec le commentaire : AJOUT TASK X
+*/
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 body {
     background-color: #f4f4f4;
     color: #333;
+    /* AJOUT TASK 1 : pour que le footer colle en bas */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* ---- HEADER ---- */
+/* MODIFIÉ TASK 1 : fond orange comme les maquettes */
 header {
     background-color: #FF5A00;
-    padding: 0.8rem 2rem;
+    color: #fff;
+    padding: 1rem 2rem;
 }
 
 nav {
@@ -30,34 +32,42 @@ nav {
     justify-content: space-between;
 }
 
+/* AJOUT TASK 1 : logo dans le nav */
 .logo {
     width: 80px;
     height: auto;
 }
 
-/* Lien Login dans le nav */
-nav a#login-link {
+nav a {
     color: #fff;
     text-decoration: none;
-    font-size: 1rem;
-    font-weight: 500;
+    margin-left: 1rem;
 }
 
-nav a#login-link:hover {
+nav a:hover {
     text-decoration: underline;
 }
 
-/* ---- MAIN ---- */
 main {
-    flex: 1;
     padding: 2rem;
+    /* AJOUT TASK 1 */
+    flex: 1;
     max-width: 1100px;
     margin: 0 auto;
     width: 100%;
 }
 
-/* ---- PAGE TITLE ---- */
-.page-title {
+/* AJOUT TASK 1 : footer orange comme les maquettes */
+footer {
+    background-color: #FF5A00;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+
+/* AJOUT TASK 1 : titre centré sur index et place */
+h1 {
     text-align: center;
     font-size: 2rem;
     font-weight: 700;
@@ -65,7 +75,7 @@ main {
     color: #222;
 }
 
-/* ---- FILTRE PRIX ---- */
+/* AJOUT TASK 3 : filtre prix */
 #filter {
     text-align: center;
     margin-bottom: 2rem;
@@ -74,7 +84,6 @@ main {
 #filter label {
     font-weight: 600;
     margin-right: 0.5rem;
-    font-size: 1rem;
 }
 
 #price-filter {
@@ -82,36 +91,34 @@ main {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 1rem;
-    cursor: pointer;
 }
 
-/* ---- LISTE DES PLACES (index) ---- */
+/* AJOUT TASK 3 : grid pour la liste des places */
 #places-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
-/* ---- PLACE CARD ---- */
+/* 
+  TASK 1 - REQUIS (paramètres fixes imposés) :
+  margin: 20px, padding: 10px, border: 1px solid #ddd, border-radius: 10px 
+*/
 .place-card {
     background: #fff;
+    margin: 20px;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 1.5rem;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
-    transition: box-shadow 0.2s;
-}
-
-.place-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    gap: 0.5rem;
 }
 
 .place-card h2 {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #222;
 }
@@ -121,34 +128,27 @@ main {
     color: #555;
 }
 
-/* ---- BOUTON DETAILS / SUBMIT ---- */
-.details-button,
-button[type="submit"],
-.submit-btn {
+/* TASK 1 - REQUIS : classe details-button */
+.details-button {
     background-color: #FF5A00;
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 0.55rem 1.5rem;
-    font-size: 1rem;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
     width: 100%;
     margin-top: 0.5rem;
 }
 
-.details-button:hover,
-button[type="submit"]:hover,
-.submit-btn:hover {
+.details-button:hover {
     background-color: #e04f00;
 }
 
-/* ---- PLACE DETAILS (place.html) ---- */
-#place-details {
-    margin-bottom: 2rem;
-}
-
+/* 
+  TASK 4 - REQUIS : classes place-details et place-info 
+*/
 .place-details {
     background: #fff;
     border: 1px solid #ddd;
@@ -160,7 +160,7 @@ button[type="submit"]:hover,
 
 .place-info {
     font-size: 1rem;
-    line-height: 2;
+    line-height: 2.2;
     color: #333;
 }
 
@@ -168,16 +168,11 @@ button[type="submit"]:hover,
     font-weight: 700;
 }
 
-/* Titre du lieu sur place.html */
-#place-title {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: #222;
+/* AJOUT TASK 4 : section reviews */
+#reviews {
+    margin-bottom: 2rem;
 }
 
-/* ---- REVIEWS ---- */
 #reviews h2 {
     font-size: 1.5rem;
     font-weight: 700;
@@ -185,11 +180,16 @@ button[type="submit"]:hover,
     color: #222;
 }
 
+/* 
+  TASK 1 - REQUIS : classe review-card
+  margin: 20px, padding: 10px, border: 1px solid #ddd, border-radius: 10px 
+*/
 .review-card {
     background: #fff;
+    margin: 20px;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 1rem 1.5rem;
     margin-bottom: 1rem;
 }
 
@@ -203,28 +203,20 @@ button[type="submit"]:hover,
 .review-card .reviewer-name {
     font-weight: 700;
     color: #222;
-    font-size: 1rem;
 }
 
-.review-card .review-rating {
-    color: #333;
-    font-size: 0.9rem;
-}
-
-/* ---- ADD REVIEW SECTION (place.html) ---- */
+/* AJOUT TASK 4 & 5 : section add-review */
 #add-review {
     margin-top: 2rem;
 }
 
-#add-review h2,
-#review-section h2 {
+#add-review h2 {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: #222;
 }
 
-/* ---- FORMULAIRES ---- */
+/* AJOUT TASK 1 : styles formulaires */
 form {
     display: flex;
     flex-direction: column;
@@ -233,22 +225,13 @@ form {
     margin: 0 auto;
 }
 
-form h2 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: #222;
-}
-
 label {
     font-weight: 600;
     font-size: 1rem;
-    color: #333;
 }
 
 input[type="email"],
 input[type="password"],
-input[type="text"],
 textarea,
 select {
     width: 100%;
@@ -258,11 +241,9 @@ select {
     font-size: 1rem;
     background: #fff;
     color: #333;
-    transition: border 0.2s;
 }
 
-input[type="email"]:focus,
-input[type="password"]:focus,
+input:focus,
 textarea:focus,
 select:focus {
     outline: none;
@@ -274,45 +255,25 @@ textarea {
     resize: vertical;
 }
 
-/* ---- LOGIN PAGE ---- */
-#login-form {
-    max-width: 420px;
-    margin: 3rem auto;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 2rem;
-}
-
-/* ---- ADD REVIEW PAGE ---- */
-#review-page-title {
-    text-align: center;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: #222;
-}
-
-#review-form {
-    max-width: 700px;
-    margin: 0 auto;
-    background: #fff;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-}
-
-/* ---- FOOTER ---- */
-footer {
+/* AJOUT TASK 2 : bouton submit orange */
+button[type="submit"] {
     background-color: #FF5A00;
     color: #fff;
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.95rem;
-    margin-top: auto;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
 }
 
-/* ---- MESSAGES D'ERREUR ---- */
+button[type="submit"]:hover {
+    background-color: #e04f00;
+}
+
+/* AJOUT TASK 2 : message d'erreur login */
 .error-message {
     color: #c0392b;
     font-size: 0.9rem;
