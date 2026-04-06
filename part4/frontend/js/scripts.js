@@ -38,7 +38,7 @@ function checkAuthentication() {
 /*Fecth */
 /*voir pour changer l'adresse + vérfier si bonne methode get */ 
 async function fetchPlaces(token) {
-    const response = await fetch('http://127.0.0.1:5000/places', {
+    const response = await fetch('/places', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
