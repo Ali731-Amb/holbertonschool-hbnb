@@ -115,24 +115,106 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
             await loginUser(email, password);
         });
     }
 
-    /*Vérification auth + affichage places (index.html)*/
+    /* Vérification auth + affichage places (index.html) */
     const placesContainer = document.getElementById('places-list');
     if (placesContainer) {
         checkAuthentication(); // va appeler fetchPlaces si token
     }
 
-    /*Setup filtre */
+    /* Setup filtre */
     const priceFilter = document.getElementById('price-filter');
     if (priceFilter) {
         setupPriceFilter();
     }
-});
 
+    /* ===================== FONCTIONS ===================== */
+
+    // Récupérer cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    // Check auth et affichage login link
+    function checkAuthentication() {
+        const token = getCookie('token');
+        const loginLink = document.getElementById('login-link');
+        if (!token) {
+            loginLink.style.display = 'block';
+        } else {
+            loginLink.style.display = 'none';
+            fetchPlaces(token);
+        }
+    }
+
+    // Fetch toutes les places
+    async function fetchPlaces(token) {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/api/v1/places', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                }
+            });
+
+            if (response.ok) {
+                const places = await response.json();
+                displayPlaces(places);
+            } else {
+                alert('Erreur lors de la récupération des places : ' + response.statusText);
+            }
+        } catch (err) {
+            console.error('Fetch error:', err);
+        }
+    }
+
+    // Affichage des places
+    function displayPlaces(places) {
+        placesContainer.innerHTML = ''; // vider le container
+        places.forEach(place => {
+            const placeCard = document.createElement('article');
+            placeCard.className = 'place-card';
+            placeCard.innerHTML = `
+                <h2>${place.name}</h2>
+                <p>Prix par nuit : $${place.price}</p>
+                <button class="details-button" onclick="window.location.href='place.html?id=${place.id}'">Voir les détails</button>
+            `;
+            placesContainer.appendChild(placeCard);
+        });
+    }
+
+    // Setup filtre prix
+    function setupPriceFilter() {
+        const options = [10, 50, 100, 'All'];
+        priceFilter.innerHTML = '';
+        options.forEach(o => {
+            const opt = document.createElement('option');
+            opt.value = o;
+            opt.textContent = o;
+            priceFilter.appendChild(opt);
+        });
+
+        priceFilter.addEventListener('change', (event) => {
+            const maxPrice = event.target.value;
+            const placeCards = document.querySelectorAll('.place-card');
+            placeCards.forEach(card => {
+                const price = parseFloat(card.querySelector('p').textContent.replace(/\D/g, ''));
+                if (maxPrice === 'All' || price <= maxPrice) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+});
