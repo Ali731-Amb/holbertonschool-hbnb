@@ -110,7 +110,7 @@ async function loginUser(email, password) {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* Login */ 
+    /* ===================== LOGIN ===================== */
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (event) => {
@@ -121,21 +121,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* Vérification auth + affichage places (index.html) */
+    /* ===================== INDEX - PLACES ===================== */
     const placesContainer = document.getElementById('places-list');
     if (placesContainer) {
-        checkAuthentication(); // va appeler fetchPlaces si token
+        checkAuthentication(); // appelle fetchPlaces si token
     }
 
-    /* Setup filtre */
     const priceFilter = document.getElementById('price-filter');
     if (priceFilter) {
         setupPriceFilter();
     }
 
+    /* ===================== ADD REVIEW ===================== */
+    const reviewForm = document.getElementById('review-form');
+    if (reviewForm) {
+        const token = checkAuthentication(); // redirige si pas auth
+        const placeId = getPlaceIdFromURL();
+
+        reviewForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const reviewText = document.getElementById('review-text').value;
+            if (!reviewText.trim()) {
+                alert("Le texte de la review ne peut pas être vide !");
+                return;
+            }
+            await submitReview(token, placeId, reviewText);
+        });
+    }
+
     /* ===================== FONCTIONS ===================== */
 
-    // Récupérer cookie
+    // Récupère cookie
     function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -143,19 +159,39 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 
-    // Check auth et affichage login link
+    // Vérifie auth et affiche login
     function checkAuthentication() {
         const token = getCookie('token');
         const loginLink = document.getElementById('login-link');
         if (!token) {
-            loginLink.style.display = 'block';
+            if (loginLink) loginLink.style.display = 'block';
         } else {
-            loginLink.style.display = 'none';
-            fetchPlaces(token);
+            if (loginLink) loginLink.style.display = 'none';
+        }
+        return token;
+    }
+
+    // LOGIN
+    async function loginUser(email, password) {
+        try {
+            const response = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.cookie = `token=${data.access_token}; path=/`;
+                window.location.href = 'index.html';
+            } else {
+                alert('Login failed: ' + response.statusText);
+            }
+        } catch (err) {
+            console.error('Login error:', err);
         }
     }
 
-    // Fetch toutes les places
+    // FETCH PLACES
     async function fetchPlaces(token) {
         try {
             const response = await fetch('http://127.0.0.1:5000/api/v1/places', {
@@ -165,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
-
             if (response.ok) {
                 const places = await response.json();
                 displayPlaces(places);
@@ -177,9 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Affichage des places
+    // DISPLAY PLACES
     function displayPlaces(places) {
-        placesContainer.innerHTML = ''; // vider le container
+        if (!placesContainer) return;
+        placesContainer.innerHTML = '';
         places.forEach(place => {
             const placeCard = document.createElement('article');
             placeCard.className = 'place-card';
@@ -192,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Setup filtre prix
+    // SETUP PRICE FILTER
     function setupPriceFilter() {
         const options = [10, 50, 100, 'All'];
         priceFilter.innerHTML = '';
@@ -202,19 +238,49 @@ document.addEventListener('DOMContentLoaded', () => {
             opt.textContent = o;
             priceFilter.appendChild(opt);
         });
-
         priceFilter.addEventListener('change', (event) => {
             const maxPrice = event.target.value;
             const placeCards = document.querySelectorAll('.place-card');
             placeCards.forEach(card => {
                 const price = parseFloat(card.querySelector('p').textContent.replace(/\D/g, ''));
-                if (maxPrice === 'All' || price <= maxPrice) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = (maxPrice === 'All' || price <= maxPrice) ? 'block' : 'none';
             });
         });
+    }
+
+    // Récupère l'ID place depuis URL
+    function getPlaceIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+
+    // POST REVIEW
+    async function submitReview(token, placeId, reviewText) {
+        try {
+            const response = await fetch('/api/v1/reviews', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ place_id: placeId, text: reviewText })
+            });
+            await handleResponse(response);
+        } catch (err) {
+            alert("Erreur réseau : " + err.message);
+        }
+    }
+
+    // HANDLE RESPONSE
+    async function handleResponse(response) {
+        if (response.ok) {
+            alert('Review soumise avec succès !');
+            const reviewInput = document.getElementById('review-text');
+            if (reviewInput) reviewInput.value = '';
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            alert('Erreur lors de la soumission : ' + (errorData.message || response.statusText));
+        }
     }
 
 });
