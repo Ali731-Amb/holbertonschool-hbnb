@@ -36,7 +36,7 @@ class ReviewList(Resource):
         review_data['user_id'] = current_user_id
         try:
             new_review = facade.create_review(review_data)
-            return new_review, 200
+            return new_review, 201
         except ValueError as e : 
             api.abort(400, str(e))            
 

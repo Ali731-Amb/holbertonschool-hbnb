@@ -13,8 +13,6 @@ jwt = JWTManager()
 
 def create_app(config_class=config.DevelopmentConfig):
         app = Flask(__name__)
-
-        CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
         
         from app.api.v1.users import api as users_ns
         from app.api.v1.amenities import api as amenities_ns
@@ -23,6 +21,7 @@ def create_app(config_class=config.DevelopmentConfig):
         from app.api.v1.auth import api as auth_ns
 
         app.config.from_object(config_class)
+        CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
         # Configuration de l'API (Swagger)
         api = Api(app, 
@@ -42,7 +41,7 @@ def create_app(config_class=config.DevelopmentConfig):
         jwt.init_app(app)
         bcrypt.init_app(app)
 
-        #with app.app_context():
-                #db.create_all()
+        with app.app_context():
+                db.create_all()
 
         return app
