@@ -20,13 +20,24 @@ def create_app(config_class=config.DevelopmentConfig):
 
         app.config.from_object(config_class)
 
-        # Configuration de l'API (Swagger)
-        api = Api(app, 
-        version='1.0', 
-        title='HBnB API', 
-        description='HBnB Application API', 
-        doc='/api/v1/')
+        authorizations = {
+        'Bearer Auth': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization',
+        'description': "Entrez : Bearer <votre_token>"
+        }
+        }
 
+        api = Api(
+                app,
+                version='1.0',
+                title='HBnB API',
+                description='HBnB Application API',
+                doc='/api/v1/',
+                authorizations=authorizations,
+                security='Bearer Auth'
+        )
 
         api.add_namespace(users_ns, path='/api/v1/users')
         api.add_namespace(amenities_ns, path='/api/v1/amenities')
@@ -37,8 +48,5 @@ def create_app(config_class=config.DevelopmentConfig):
         db.init_app(app)
         jwt.init_app(app)
         bcrypt.init_app(app)
-
-        #with app.app_context():
-                #db.create_all()
 
         return app
