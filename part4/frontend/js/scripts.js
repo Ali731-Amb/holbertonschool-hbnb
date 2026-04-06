@@ -1,14 +1,11 @@
 /* 
-  HBNB Part 4 - scripts.js
-  Adapté à la base fournie par Holberton
-  Commentaires : indique quelle task chaque fonction couvre
+HBNB Part 4 - scripts.js
 */
 
 /* =============================================
    UTILITAIRES (utilisés par toutes les tasks)
    ============================================= */
 
-// Récupère un cookie par son nom
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -16,7 +13,6 @@ function getCookie(name) {
     return null;
 }
 
-// Récupère l'id du lieu depuis l'URL (?id=xxx)
 function getPlaceIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
@@ -54,11 +50,9 @@ async function loginUser(email, password) {
 
         if (response.ok) {
             const data = await response.json();
-            // Stocke le token JWT dans un cookie
             document.cookie = `token=${data.access_token}; path=/`;
             window.location.href = 'index.html';
         } else {
-            // TASK 2 man review : message d'erreur approprié (pas juste alert)
             const errorEl = document.getElementById('login-error');
             if (errorEl) {
                 errorEl.classList.add('visible');
@@ -77,7 +71,6 @@ async function loginUser(email, password) {
 async function fetchPlaces(token) {
     try {
         const headers = { 'Content-Type': 'application/json' };
-        // Inclut le token si disponible (task 3 : "si disponible")
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
         const response = await fetch('/api/v1/places', {
@@ -104,11 +97,10 @@ function displayPlaces(places) {
     places.forEach(place => {
         const card = document.createElement('article');
         card.className = 'place-card';
-        // data-price utilisé par le filtre (évite les bugs de parsing)
         card.dataset.price = place.price;
 
         card.innerHTML = `
-            <h2>${place.name}</h2>
+            <h2>${place.title}</h2>
             <p>Price per night: $${place.price}</p>
             <button class="details-button"
                 onclick="window.location.href='place.html?id=${place.id}'">
@@ -119,12 +111,11 @@ function displayPlaces(places) {
     });
 }
 
-// TASK 3 : filtre côté client par prix
+// TASK 3 : filtre price
 function setupPriceFilter() {
     const priceFilter = document.getElementById('price-filter');
     if (!priceFilter) return;
 
-    // Injecte les options (task 3 : 10, 50, 100, All)
     priceFilter.innerHTML = '';
     ['10', '50', '100', 'All'].forEach(val => {
         const opt = document.createElement('option');
@@ -138,7 +129,6 @@ function setupPriceFilter() {
         const maxPrice = event.target.value;
         const cards = document.querySelectorAll('.place-card');
         cards.forEach(card => {
-            // Utilise data-price pour éviter les bugs de parsing texte
             const price = parseFloat(card.dataset.price);
             if (maxPrice === 'All' || price <= parseFloat(maxPrice)) {
                 card.style.display = 'flex';
@@ -175,11 +165,9 @@ async function fetchPlaceDetails(token, placeId) {
 }
 
 function displayPlaceDetails(place) {
-    // Titre dynamique de la page
     const titleEl = document.getElementById('place-title');
-    if (titleEl) titleEl.textContent = place.name;
+    if (titleEl) titleEl.textContent = place.title;
 
-    // Infos du lieu (classes place-details et place-info requises task 1)
     const detailsSection = document.getElementById('place-details');
     if (detailsSection) {
         const amenities = Array.isArray(place.amenities)
@@ -202,7 +190,6 @@ function displayPlaceDetails(place) {
         `;
     }
 
-    // Reviews (classe review-card requise task 1)
     const reviewsSection = document.getElementById('reviews');
     if (reviewsSection) {
         const reviews = place.reviews || [];
@@ -233,7 +220,7 @@ function displayPlaceDetails(place) {
    ============================================= */
 async function submitReview(token, placeId, reviewText, rating) {
     try {
-        const response = await fetch('/api/v1/reviews', {
+        const response = await fetch('/api/v1/reviews/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -248,7 +235,6 @@ async function submitReview(token, placeId, reviewText, rating) {
 
         if (response.ok) {
             alert('Review submitted successfully!');
-            // Vide le formulaire après soumission
             const textarea = document.getElementById('review-text');
             const select = document.getElementById('rating');
             if (textarea) textarea.value = '';
@@ -282,14 +268,13 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---- PAGE INDEX (index.html) ---- */
     const placesContainer = document.getElementById('places-list');
     if (placesContainer) {
-        const token = checkAuthentication(); // affiche/cache #login-link
+        const token = checkAuthentication();
         setupPriceFilter();
-        fetchPlaces(token); // fetch même sans token (API places publique)
+        fetchPlaces(token);
     }
 
-    /* ---- PAGE PLACE DETAILS (place.html) ---- */
+    /* ---- PAGE PLACE DETAILS ---- */
     const placeDetailsSection = document.getElementById('place-details');
-    // On vérifie aussi place-title pour ne pas confondre avec add_review
     const placeTitleEl = document.getElementById('place-title');
     if (placeDetailsSection && placeTitleEl !== null) {
         const token = checkAuthentication();
@@ -300,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // TASK 4 : montre add-review seulement si connecté
         const addReviewSection = document.getElementById('add-review');
         if (addReviewSection) {
             addReviewSection.style.display = token ? 'block' : 'none';
@@ -308,7 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetchPlaceDetails(token, placeId);
 
-        // Soumission du formulaire review depuis place.html
         const reviewFormPlace = document.getElementById('review-form');
         if (reviewFormPlace && token) {
             reviewFormPlace.addEventListener('submit', async (event) => {
@@ -320,14 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /* ---- PAGE ADD REVIEW (add_review.html) ---- */
     const reviewPageTitle = document.getElementById('review-page-title');
     if (reviewPageTitle) {
         // TASK 5 : redirige si non connecté
         const token = checkAuthentication(true);
         const placeId = getPlaceIdFromURL();
 
-        // Affiche "Reviewing: [nom du lieu]" dans le titre
         if (placeId && token) {
             fetch(`/api/v1/places/${placeId}`, {
                 headers: {
@@ -337,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(r => r.json())
             .then(place => {
-                reviewPageTitle.textContent = `Reviewing: ${place.name}`;
+                reviewPageTitle.textContent = `Reviewing: ${place.title}`;
             })
             .catch(() => {
                 reviewPageTitle.textContent = 'Add a Review';
