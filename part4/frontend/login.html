@@ -3,40 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Place Details</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- AJOUT TASK 1 : header avec logo (requis man review) -->
     <header>
         <nav>
             <img src="assets/logo.png" alt="Application Logo" class="logo">
-            <!-- Pas de lien Login sur la page Login -->
+            <a href="login.html" id="login-link">Login</a>
         </nav>
     </header>
-
     <main>
-        <form id="login-form">
-            <h2>Login</h2>
-
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-
-            <!-- AJOUT TASK 2 : message d'erreur (man review : "messages d'erreur appropriés") -->
-            <p class="error-message" id="login-error">Invalid email or password. Please try again.</p>
-
-            <button type="submit">Login</button>
-        </form>
+        <h1 id="place-title"></h1>
+        <section id="place-details">
+        </section>
+        <section id="reviews">
+        </section>
+        <section id="add-review" style="display: none;">
+            <h2>Add a Review</h2>
+            <form id="review-form">
+                <label for="review-text">Review:</label>
+                <textarea id="review-text" name="review-text" required></textarea>
+                <label for="rating">Rating:</label>
+                <select id="rating" name="rating" required>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
     </main>
-
-    <!-- AJOUT TASK 1 : footer requis man review -->
     <footer>
         <p>© 2024 HBnB Evolution. All rights reserved.</p>
     </footer>
 
-    <script src="scripts.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
