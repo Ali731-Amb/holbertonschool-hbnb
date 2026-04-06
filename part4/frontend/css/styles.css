@@ -43,3 +43,10 @@ main {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+/* Img logo */ 
+
+.logo {
+    width: 100px;
+    height: auto;
+}
