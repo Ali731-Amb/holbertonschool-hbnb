@@ -38,7 +38,7 @@ function checkAuthentication() {
 /*Fecth */
 /*voir pour changer l'adresse + vérfier si bonne methode get */ 
 async function fetchPlaces(token) {
-    const response = await fetch('/places', {
+    const response = await fetch('http://127.0.0.1:5000/api/v1/places', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -93,7 +93,7 @@ function setupPriceFilter() {
 
 /*message submit login */
 async function loginUser(email, password) {
-    const response = await fetch('/login', {
+    const response = await fetch('http://127.0.0.1:5000/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
