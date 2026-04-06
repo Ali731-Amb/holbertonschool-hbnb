@@ -30,3 +30,16 @@ nav a {
 main {
     padding: 2rem;
 }
+
+
+/* ---- Place Card + Button ---- */
+.place-card {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+.details-button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
