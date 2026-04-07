@@ -42,7 +42,7 @@ function checkAuthentication(redirect = false) {
    ============================================= */
 async function loginUser(email, password) {
     try {
-        const response = await fetch('/api/v1/auth/login', {
+        const response = await fetch('http://127.0.0.1:5000/api/v1/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -73,7 +73,7 @@ async function fetchPlaces(token) {
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const response = await fetch('/api/v1/places', {
+        const response = await fetch('http://127.0.0.1:5000/api/v1/places', {
             method: 'GET',
             headers
         });
@@ -220,7 +220,7 @@ function displayPlaceDetails(place) {
    ============================================= */
 async function submitReview(token, placeId, reviewText, rating) {
     try {
-        const response = await fetch('/api/v1/reviews/', {
+        const response = await fetch('http://127.0.0.1:5000/api/v1/reviews/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
