@@ -1,0 +1,289 @@
+/* 
+  Base fournie par Holberton - NE PAS SUPPRIMER les styles existants
+  Ajouts marqués avec le commentaire : AJOUT TASK X
+*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    /* AJOUT TASK 1 : pour que le footer colle en bas */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* MODIFIÉ TASK 1 : fond orange comme les maquettes */
+header {
+    background-color: #FF5A00;
+    color: #fff;
+    padding: 1rem 2rem;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* AJOUT TASK 1 : logo dans le nav */
+.logo {
+    width: 80px;
+    height: auto;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 2rem;
+    /* AJOUT TASK 1 */
+    flex: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* AJOUT TASK 1 : footer orange comme les maquettes */
+footer {
+    background-color: #FF5A00;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+
+/* AJOUT TASK 1 : titre centré sur index et place */
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #222;
+}
+
+/* AJOUT TASK 3 : filtre prix */
+#filter {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#filter label {
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+#price-filter {
+    padding: 0.3rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+/* AJOUT TASK 3 : grid pour la liste des places */
+#places-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+/* 
+  TASK 1 - REQUIS (paramètres fixes imposés) :
+  margin: 20px, padding: 10px, border: 1px solid #ddd, border-radius: 10px 
+*/
+.place-card {
+    background: #fff;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.place-card h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.place-card p {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* TASK 1 - REQUIS : classe details-button */
+.details-button {
+    background-color: #FF5A00;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.details-button:hover {
+    background-color: #e04f00;
+}
+
+/* 
+  TASK 4 - REQUIS : classes place-details et place-info 
+*/
+.place-details {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.place-info {
+    font-size: 1rem;
+    line-height: 2.2;
+    color: #333;
+}
+
+.place-info strong {
+    font-weight: 700;
+}
+
+/* AJOUT TASK 4 : section reviews */
+#reviews {
+    margin-bottom: 2rem;
+}
+
+#reviews h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #222;
+}
+
+/* 
+  TASK 1 - REQUIS : classe review-card
+  margin: 20px, padding: 10px, border: 1px solid #ddd, border-radius: 10px 
+*/
+.review-card {
+    background: #fff;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.review-card p {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 0.3rem;
+}
+
+.review-card .reviewer-name {
+    font-weight: 700;
+    color: #222;
+}
+
+/* AJOUT TASK 4 & 5 : section add-review */
+#add-review {
+    margin-top: 2rem;
+}
+
+#add-review h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* AJOUT TASK 1 : styles formulaires */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+label {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+    color: #333;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #FF5A00;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* AJOUT TASK 2 : bouton submit orange */
+button[type="submit"] {
+    background-color: #FF5A00;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+button[type="submit"]:hover {
+    background-color: #e04f00;
+}
+
+/* AJOUT TASK 2 : message d'erreur login */
+.error-message {
+    color: #c0392b;
+    font-size: 0.9rem;
+    background: #fdecea;
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    padding: 0.5rem 0.8rem;
+    display: none;
+}
+
+.error-message.visible {
+    display: block;
+}
