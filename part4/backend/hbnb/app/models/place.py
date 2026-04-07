@@ -120,7 +120,26 @@ class Place(BaseModel):
             "price": self.price,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "owner_id": self.owner.id,
+            "owner_id": self.owner_id,
+            "owner": {
+                "id": self.owner.id,
+                "first_name": self.owner.first_name,
+                "last_name": self.owner.last_name
+            } if self.owner else None,
+            "amenities": [
+                {"id": a.id, "name": a.name} for a in self.amenities
+            ],
+            "reviews": [
+                {
+                    "id": r.id,
+                    "text": r.text,
+                    "rating": r.rating,
+                    "user": {
+                        "first_name": r.author.first_name,
+                        "last_name": r.author.last_name
+                    } if r.author else None
+                } for r in self.reviews
+            ],
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
-            }
+        }

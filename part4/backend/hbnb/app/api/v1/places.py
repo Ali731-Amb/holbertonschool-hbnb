@@ -76,14 +76,13 @@ class PlaceList(Resource):
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
-    @api.marshal_with(place_model)
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get place details by ID"""
         try:
             place = facade.get_place(place_id)
-            return place, 200
+            return place.to_dict(), 200
         except ValueError as e:
             api.abort(404, str(e))
 
